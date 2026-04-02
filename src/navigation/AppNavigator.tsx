@@ -4,6 +4,7 @@ import HomeScreen from '../screens/HomeScreen';
 import AddExpenseScreen from '../screens/AddExpenseScreen';
 import { View, ColorSchemeName } from 'react-native';
 import { COLORS } from '../constants/colors';
+import ThemeToggleButton from './ThemeToggleButton';
 
 export type RootStackParamList = {
   Home: undefined;
