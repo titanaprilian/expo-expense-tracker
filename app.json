@@ -1,0 +1,8 @@
+{
+  "expo": {
+    "name": "expo-expense-tracker",
+    "slug": "expo-expense-tracker",
+    "version": "1.0.0",
+    "userInterfaceStyle": "automatic"
+  }
+}
