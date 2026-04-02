@@ -17,13 +17,13 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const totalSpending = useTotalSpending();
 
   return (
-    <View className="p-4 flex-1" style={{ backgroundColor: COLORS.background }}>
-      <View className="bg-white p-4 mb-4 rounded-xl shadow-sm" style={{ borderColor: COLORS.border, borderWidth: 1 }}>
-        <Text className="text-sm" style={{ color: COLORS.text.secondary }}>Total Spending</Text>
-        <Text className="text-3xl font-bold mt-1" style={{ color: COLORS.text.primary }}>{formatRupiah(totalSpending)}</Text>
+    <View className="p-4 flex-1 bg-background">
+      <View className="bg-surface p-4 mb-4 rounded-xl shadow-sm border border-color">
+        <Text className="text-sm text-secondary">Total Spending</Text>
+        <Text className="text-3xl font-bold mt-1 text-primary">{formatRupiah(totalSpending)}</Text>
       </View>
       
-      <Text className="text-xl font-bold mb-4" style={{ color: COLORS.text.primary }}>Expenses</Text>
+      <Text className="text-xl font-bold mb-4 text-primary">Expenses</Text>
       
       <Button 
         title="Add Expense" 
@@ -32,26 +32,26 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       />
       
       {expenses.length === 0 ? (
-        <Text className="text-center mt-4" style={{ color: COLORS.text.muted }}>No expenses yet</Text>
+        <Text className="text-center mt-4 text-muted">No expenses yet</Text>
       ) : (
         <FlatList
           data={expenses}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View className="bg-white p-4 mb-2 rounded-xl shadow-sm" style={{ borderColor: COLORS.border, borderWidth: 1 }}>
+            <View className="bg-surface p-4 mb-2 rounded-xl shadow-sm border border-color">
               <View className="flex-row justify-between items-center">
                 <View className="flex-row items-center gap-3">
                   <View className="w-10 h-10 rounded-lg items-center justify-center" style={{ backgroundColor: CATEGORY_COLORS[item.category] + '20' }}>
                     <Ionicons name={CATEGORY_ICONS[item.category]} size={20} color={CATEGORY_COLORS[item.category]} />
                   </View>
-                  <Text className="text-lg font-semibold" style={{ color: COLORS.text.primary }}>{item.category}</Text>
+                  <Text className="text-lg font-semibold text-primary">{item.category}</Text>
                 </View>
-                <Text className="text-xl font-bold" style={{ color: COLORS.success }}>{formatRupiah(item.amount)}</Text>
+                <Text className="text-xl font-bold text-success">{formatRupiah(item.amount)}</Text>
               </View>
               {item.note ? (
-                <Text className="text-sm mt-2" style={{ color: COLORS.text.secondary }}>{item.note}</Text>
+                <Text className="text-sm mt-2 text-secondary">{item.note}</Text>
               ) : null}
-              <Text className="text-xs mt-2" style={{ color: COLORS.text.muted }}>
+              <Text className="text-xs mt-2 text-muted">
                 {new Date(item.date).toLocaleDateString()}
               </Text>
             </View>
