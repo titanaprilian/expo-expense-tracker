@@ -1,6 +1,7 @@
 import { Text, View, Button, FlatList } from 'react-native';
 import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import { useTotalSpending } from '../features/expense/hooks/useTotalSpending';
+import { formatRupiah } from '../utils/currency';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 
@@ -16,7 +17,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     <View className="p-4 flex-1 bg-gray-50">
       <View className="bg-white p-4 mb-4 rounded-lg shadow-sm border border-gray-100">
         <Text className="text-gray-500 text-sm">Total Spending</Text>
-        <Text className="text-3xl font-bold text-gray-800 mt-1">${totalSpending.toFixed(2)}</Text>
+        <Text className="text-3xl font-bold text-gray-800 mt-1">{formatRupiah(totalSpending)}</Text>
       </View>
       
       <Text className="text-2xl font-bold text-gray-800 mb-4">Expenses</Text>
@@ -36,7 +37,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             <View className="bg-white p-4 mb-2 rounded-lg shadow-sm border border-gray-100">
               <View className="flex-row justify-between items-center">
                 <Text className="text-lg font-semibold text-gray-800">{item.category}</Text>
-                <Text className="text-xl font-bold text-green-600">${item.amount.toFixed(2)}</Text>
+                <Text className="text-xl font-bold text-green-600">{formatRupiah(item.amount)}</Text>
               </View>
               {item.note ? (
                 <Text className="text-gray-500 text-sm mt-1">{item.note}</Text>
