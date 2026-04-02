@@ -56,4 +56,4 @@ export const useAddExpense = (navigation: AddExpenseScreenProps['navigation']) =
   };
 };
 
-export const CATEGORIES = ['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Other'];
+export const CATEGORIES = ['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Health', 'Other'];
