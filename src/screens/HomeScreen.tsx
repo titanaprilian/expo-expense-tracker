@@ -1,5 +1,6 @@
 import { Text, View, Button, FlatList } from 'react-native';
 import { useExpenseStore } from '../features/expense/store/useExpenseStore';
+import { useTotalSpending } from '../features/expense/hooks/useTotalSpending';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 
@@ -9,9 +10,15 @@ type HomeScreenProps = {
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const expenses = useExpenseStore((state) => state.expenses);
+  const totalSpending = useTotalSpending();
 
   return (
     <View className="p-4 flex-1 bg-gray-50">
+      <View className="bg-white p-4 mb-4 rounded-lg shadow-sm border border-gray-100">
+        <Text className="text-gray-500 text-sm">Total Spending</Text>
+        <Text className="text-3xl font-bold text-gray-800 mt-1">${totalSpending.toFixed(2)}</Text>
+      </View>
+      
       <Text className="text-2xl font-bold text-gray-800 mb-4">Expenses</Text>
       
       <Button 
