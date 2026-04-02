@@ -1,12 +1,5 @@
 import { create } from 'zustand';
-
-export interface Expense {
-  id: string;
-  amount: number;
-  category: string;
-  note: string;
-  date: string;
-}
+import type { Expense } from '../types';
 
 interface ExpenseState {
   expenses: Expense[];

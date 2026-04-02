@@ -1,38 +1,14 @@
-import { useState } from 'react';
-import { Text, View, TextInput, Button, Alert } from 'react-native';
+import { Text, View, TextInput, Button } from 'react-native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
-import { useExpenseStore, type Expense } from '../store/useExpenseStore';
+import { useAddExpense, CATEGORIES } from '../features/expense/hooks/useAddExpense';
 
 type AddExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'AddExpense'>;
 };
 
-const CATEGORIES = ['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Other'];
-
 export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) {
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('');
-  const [note, setNote] = useState('');
-  const addExpense = useExpenseStore((state) => state.addExpense);
-
-  const handleSave = () => {
-    if (!amount || !category) {
-      Alert.alert('Error', 'Please enter amount and category');
-      return;
-    }
-
-    const expense: Expense = {
-      id: Date.now().toString(),
-      amount: parseFloat(amount),
-      category,
-      note: note || '',
-      date: new Date().toISOString(),
-    };
-
-    addExpense(expense);
-    navigation.goBack();
-  };
+  const { amount, setAmount, category, setCategory, note, setNote, handleSave } = useAddExpense(navigation);
 
   return (
     <View style={{ padding: 16 }}>
