@@ -1,5 +1,5 @@
 import { Text, View, Button, FlatList } from 'react-native';
-import { useExpenseStore } from '../features/expense/store/useExpenseStore';
+import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import { useTotalSpending } from '../features/expense/hooks/useTotalSpending';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
