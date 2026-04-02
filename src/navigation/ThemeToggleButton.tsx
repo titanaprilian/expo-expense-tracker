@@ -34,7 +34,7 @@ const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({ colorScheme }) =>
   const iconColor = colorScheme === 'dark' ? COLORS.dark.text.primary : COLORS.text.primary;
 
   return (
-    <TouchableOpacity onPress={toggleTheme} className="p-2">
+    <TouchableOpacity onPress={toggleTheme} className="p-2 mr-4">
       <Ionicons name={getIconName(themePreference)} size={24} color={iconColor} />
     </TouchableOpacity>
   );
