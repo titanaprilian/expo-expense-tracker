@@ -11,4 +11,15 @@ export const COLORS = {
   border: '#E2E8F0',
   success: '#10B981',
   error: '#EF4444',
+
+  dark: {
+    background: '#0F172A', // Dark navy
+    surface: '#1E293B',    // Slightly lighter dark for cards
+    text: {
+      primary: '#F8FAFC',  // Light gray
+      secondary: '#E2E8F0', // Slightly darker light gray
+      muted: '#94A3B8',    // Medium gray (similar to light)
+    },
+    border: '#475569',     // Darker gray for borders
+  },
 };

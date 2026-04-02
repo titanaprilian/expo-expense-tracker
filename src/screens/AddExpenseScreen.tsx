@@ -14,18 +14,10 @@ export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) 
   const { amount, setAmount, category, setCategory, note, setNote, handleSave } = useAddExpense(navigation);
 
   return (
-    <View style={{ padding: 16, backgroundColor: COLORS.background, flex: 1 }}>
-      <Text className="text-lg font-semibold mb-2" style={{ color: COLORS.text.primary }}>Amount</Text>
+    <View className="p-4 flex-1 bg-background">
+      <Text className="text-lg font-semibold mb-2 text-primary">Amount</Text>
       <TextInput
-        style={{ 
-          borderWidth: 1, 
-          padding: 12, 
-          marginBottom: 20, 
-          borderRadius: 8,
-          backgroundColor: COLORS.surface,
-          borderColor: COLORS.border,
-          color: COLORS.text.primary,
-        }}
+        className="border p-3 mb-5 rounded-lg bg-surface border-color text-primary"
         value={amount}
         onChangeText={setAmount}
         keyboardType="numeric"
@@ -33,21 +25,15 @@ export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) 
         placeholderTextColor={COLORS.text.muted}
       />
 
-      <Text className="text-lg font-semibold mb-3" style={{ color: COLORS.text.primary }}>Category</Text>
-      <View style={{ marginBottom: 20, flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+      <Text className="text-lg font-semibold mb-3 text-primary">Category</Text>
+      <View className="mb-5 flex-row flex-wrap gap-2">
         {CATEGORIES.map((cat) => (
           <TouchableOpacity
             key={cat}
             onPress={() => setCategory(cat)}
+            className="flex-row items-center gap-2 py-2 px-3 rounded-lg border"
             style={{ 
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 8,
-              paddingVertical: 10,
-              paddingHorizontal: 14,
-              borderRadius: 8,
               backgroundColor: category === cat ? CATEGORY_COLORS[cat] + '20' : COLORS.surface,
-              borderWidth: 1,
               borderColor: category === cat ? CATEGORY_COLORS[cat] : COLORS.border,
             }}
           >
@@ -56,27 +42,21 @@ export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) 
               size={20} 
               color={category === cat ? CATEGORY_COLORS[cat] : COLORS.text.secondary} 
             />
-            <Text style={{ 
-              color: category === cat ? CATEGORY_COLORS[cat] : COLORS.text.secondary,
-              fontWeight: category === cat ? '600' : '400',
-            }}>
+            <Text 
+              style={{ 
+                color: category === cat ? CATEGORY_COLORS[cat] : COLORS.text.secondary,
+                fontWeight: category === cat ? '600' : '400',
+              }}
+            >
               {cat}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text className="text-lg font-semibold mb-2" style={{ color: COLORS.text.primary }}>Note (optional)</Text>
+      <Text className="text-lg font-semibold mb-2 text-primary">Note (optional)</Text>
       <TextInput
-        style={{ 
-          borderWidth: 1, 
-          padding: 12, 
-          marginBottom: 20, 
-          borderRadius: 8,
-          backgroundColor: COLORS.surface,
-          borderColor: COLORS.border,
-          color: COLORS.text.primary,
-        }}
+        className="border p-3 mb-5 rounded-lg bg-surface border-color text-primary"
         value={note}
         onChangeText={setNote}
         placeholder="Enter note"
@@ -85,14 +65,9 @@ export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) 
 
       <TouchableOpacity 
         onPress={handleSave}
-        style={{ 
-          backgroundColor: COLORS.primary,
-          padding: 14,
-          borderRadius: 8,
-          alignItems: 'center',
-        }}
+        className="bg-primary p-4 rounded-lg items-center"
       >
-        <Text style={{ color: COLORS.surface, fontWeight: '600', fontSize: 16 }}>Save</Text>
+        <Text className="text-surface font-semibold text-base">Save</Text>
       </TouchableOpacity>
     </View>
   );
