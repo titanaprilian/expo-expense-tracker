@@ -49,7 +49,12 @@ export default function HomeScreen({ navigation, colorScheme }: HomeScreenProps)
           data={expenses}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
-            <AnimatedExpenseItem item={item} index={index} colorScheme={colorScheme} />
+            <AnimatedExpenseItem 
+              item={item} 
+              index={index} 
+              colorScheme={colorScheme}
+              onPress={() => navigation.navigate('EditExpense', { expenseId: item.id })}
+            />
           )}
           style={{ marginTop: 16 }}
         />

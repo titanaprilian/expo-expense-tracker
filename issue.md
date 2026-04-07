@@ -1,21 +1,18 @@
-# Issue: Enhance App Interactivity with Animations and Visual Feedback
+# Issue: Implement Edit Expense Feature
 
 ## Overview
-The current application feels static. To make the app feel "alive" and polished, we need to implement meaningful animations and transitions throughout the user interface.
+Currently, users can only add and view expenses. We need to implement the ability to edit existing records to correct mistakes or update information.
 
 ## Goals
-- Add visual feedback (scale, opacity, or color shifts) when users interact with buttons and category chips.
-- Implement entry/exit animations for list items and screen transitions.
-- Ensure the app feels responsive and "bouncy" rather than rigid.
+- **Navigation**: Clicking an expense card on the Home screen should navigate to an "Edit Expense" page.
+- **Form Pre-population**: The edit form should automatically fill with the existing data (amount, category, note) for that specific expense.
+- **State Synchronization**: When an expense is updated, the global state and the "Total Spending" on the Home screen must reflect the change immediately.
+- **Persistence**: Ensure changes are saved to local storage (`AsyncStorage`).
 
 ## Technical Guidance
-- **Tooling**: Use **Tailwind CSS (via NativeWind)** for styling-based transitions.
-- **Library**: Leverage `react-native-reanimated` (already in `package.json`) for complex gestures or layout animations.
-- **Scope**:
-    - Button presses (Add Expense, Save).
-    - Category selection feedback.
-    - FlatList item entry animations on the Home screen.
-    - Smooth transitions between the Home and Add Expense screens.
+- **Store**: Update the `useExpenseStore` to include an `updateExpense` function.
+- **Navigation**: Pass the `expenseId` or the full `expense` object as a parameter to the new screen.
+- **UI**: You can either create a new `EditExpenseScreen.tsx` or refactor `AddExpenseScreen.tsx` to handle both "Add" and "Edit" modes.
 
 ## Note for Developer
-Focus on "micro-interactions." The goal is not to have distracting animations, but to provide the user with clear, fluid feedback for every action they take. You have the creative freedom to choose the specific animation curves and durations that best fit the brand.
+Focus on making the transition from the list to the edit form smooth. The user should feel confident that their changes have been saved correctly when they return to the Home screen.

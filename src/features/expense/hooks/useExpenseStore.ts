@@ -10,6 +10,7 @@ export type ThemePreference = 'light' | 'dark' | 'system';
 interface ExpenseState {
   expenses: Expense[];
   addExpense: (expense: Expense) => void;
+  updateExpense: (id: string, updates: Partial<Expense>) => void;
   hydrated: boolean;
   hydrate: () => Promise<void>;
   themePreference: ThemePreference;
@@ -37,6 +38,15 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   addExpense: (expense) => {
     set((state) => {
       const newExpenses = [...state.expenses, expense];
+      AsyncStorage.setItem(EXPENSE_STORAGE_KEY, JSON.stringify(newExpenses));
+      return { expenses: newExpenses };
+    });
+  },
+  updateExpense: (id, updates) => {
+    set((state) => {
+      const newExpenses = state.expenses.map((expense) =>
+        expense.id === id ? { ...expense, ...updates } : expense
+      );
       AsyncStorage.setItem(EXPENSE_STORAGE_KEY, JSON.stringify(newExpenses));
       return { expenses: newExpenses };
     });
