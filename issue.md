@@ -1,18 +1,18 @@
-# Issue: Implement Edit Expense Feature
+# Issue: Implement Delete Expense Feature
 
 ## Overview
-Currently, users can only add and view expenses. We need to implement the ability to edit existing records to correct mistakes or update information.
+Users need a way to remove expenses they no longer want to track. A delete action should be available during the editing process.
 
 ## Goals
-- **Navigation**: Clicking an expense card on the Home screen should navigate to an "Edit Expense" page.
-- **Form Pre-population**: The edit form should automatically fill with the existing data (amount, category, note) for that specific expense.
-- **State Synchronization**: When an expense is updated, the global state and the "Total Spending" on the Home screen must reflect the change immediately.
-- **Persistence**: Ensure changes are saved to local storage (`AsyncStorage`).
+- **UI**: Add a "Delete" button to the Edit Expense screen.
+- **Confirmation**: Show an alert to confirm the deletion before proceeding.
+- **State Update**: Remove the record from the global store and ensure the "Total Spending" on the Home screen is updated immediately.
+- **Navigation**: Return to the Home screen after a successful deletion.
+- **Persistence**: Ensure the record is permanently removed from local storage (`AsyncStorage`).
 
 ## Technical Guidance
-- **Store**: Update the `useExpenseStore` to include an `updateExpense` function.
-- **Navigation**: Pass the `expenseId` or the full `expense` object as a parameter to the new screen.
-- **UI**: You can either create a new `EditExpenseScreen.tsx` or refactor `AddExpenseScreen.tsx` to handle both "Add" and "Edit" modes.
+- **Store**: Add a `deleteExpense` function to `useExpenseStore`.
+- **Logic**: Use the unique `id` of the expense to filter it out of the current list.
 
 ## Note for Developer
-Focus on making the transition from the list to the edit form smooth. The user should feel confident that their changes have been saved correctly when they return to the Home screen.
+The delete button should be visually distinct (e.g., using an "error" or red color) to prevent accidental clicks. Ensure the user is prompted for confirmation to avoid data loss.

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Text, View, TextInput, TouchableOpacity, ColorSchemeName } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -88,6 +88,7 @@ function CategoryChip({
 export default function EditExpenseScreen({ navigation, colorScheme, route }: EditExpenseScreenProps) {
   const isDark = colorScheme === 'dark';
   const updateExpense = useExpenseStore((state) => state.updateExpense);
+  const deleteExpense = useExpenseStore((state) => state.deleteExpense);
   
   const expenseId = route?.params?.expenseId;
   const expenses = useExpenseStore((state) => state.expenses);
@@ -117,6 +118,26 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
     });
     
     navigation.goBack();
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Expense',
+      'Are you sure you want to delete this expense?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Delete', 
+          style: 'destructive',
+          onPress: () => {
+            if (expenseId) {
+              deleteExpense(expenseId);
+              navigation.goBack();
+            }
+          }
+        },
+      ]
+    );
   };
 
   const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
@@ -185,6 +206,19 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
       >
         <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Update</Text>
       </AnimatedButton>
+
+      <TouchableOpacity 
+        onPress={handleDelete}
+        style={{ 
+          backgroundColor: isDark ? '#EF4444' : '#DC2626', 
+          padding: 14, 
+          borderRadius: 8, 
+          alignItems: 'center',
+          marginTop: 12 
+        }}
+      >
+        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Delete</Text>
+      </TouchableOpacity>
     </View>
   );
 }
