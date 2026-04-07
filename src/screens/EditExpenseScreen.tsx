@@ -251,8 +251,12 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
           animationType="slide"
           onRequestClose={() => setShowDatePicker(false)}
         >
-          <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' }}>
-            <View style={{ backgroundColor: surfaceColor, paddingBottom: 40 }}>
+          <TouchableOpacity 
+            style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }} 
+            activeOpacity={1} 
+            onPress={() => setShowDatePicker(false)}
+          >
+            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: surfaceColor }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: borderColor }}>
                 <TouchableOpacity onPress={() => setShowDatePicker(false)}>
                   <Text style={{ color: textSecondary, fontSize: 16 }}>Cancel</Text>
@@ -265,11 +269,9 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
                 mode="date"
                 display="spinner"
                 onChange={handleDateChange}
-                themeVariant={isDark ? 'dark' : 'light'}
-                style={{ height: 200 }}
               />
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
       )}
 
