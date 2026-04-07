@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal, Platform } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -11,7 +11,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import type { Expense } from '../features/expense/types';
 import { formatRupiah, parseRupiah } from '../utils/currency';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 type EditExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EditExpense'>;
@@ -216,11 +216,7 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
 
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Date</Text>
       <TouchableOpacity
-        onPress={() => {
-          if (Platform.OS === 'ios') {
-            setShowDatePicker(true);
-          }
-        }}
+        onPress={() => setShowDatePicker(true)}
         style={{
           borderWidth: 1,
           padding: 12,
@@ -237,39 +233,38 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
         <Ionicons name="calendar-outline" size={20} color={textSecondary} />
       </TouchableOpacity>
 
-      {Platform.OS === 'android' && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            if (selectedDate) {
-              setDate(selectedDate);
-            }
-          }}
-        />
-      )}
-
-      {showDatePicker && Platform.OS === 'ios' && (
-        <View style={{ height: 300, marginBottom: 20 }}>
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="spinner"
-            onChange={(event, selectedDate) => {
-              if (selectedDate) {
-                setDate(selectedDate);
-              }
-            }}
-            style={{ backgroundColor: surfaceColor }}
-          />
-          <TouchableOpacity 
-            onPress={() => setShowDatePicker(false)}
-            style={{ position: 'absolute', top: 0, right: 16 }}
-          >
-            <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Done</Text>
-          </TouchableOpacity>
-        </View>
+      {showDatePicker && (
+        <Modal
+          visible={true}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShowDatePicker(false)}
+        >
+          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            <View style={{ backgroundColor: surfaceColor, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 40 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: borderColor }}>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ color: textSecondary, fontSize: 16 }}>Cancel</Text>
+                </TouchableOpacity>
+                <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '600' }}>Select Date</Text>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="spinner"
+                onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                  if (selectedDate) {
+                    setDate(selectedDate);
+                  }
+                }}
+                style={{ height: 200 }}
+              />
+            </View>
+          </View>
+        </Modal>
       )}
 
       {hasChanges ? (

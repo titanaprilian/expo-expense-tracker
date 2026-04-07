@@ -8,7 +8,7 @@ import { COLORS } from '../constants/colors';
 import { AnimatedButton } from '../components/AnimatedButton';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useState } from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 type AddExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'AddExpense'>;
@@ -142,11 +142,7 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
 
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Date</Text>
       <TouchableOpacity
-        onPress={() => {
-          if (Platform.OS === 'ios') {
-            setShowDatePicker(true);
-          }
-        }}
+        onPress={() => setShowDatePicker(true)}
         style={{
           borderWidth: 1,
           padding: 12,
@@ -163,39 +159,38 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
         <Ionicons name="calendar-outline" size={20} color={textSecondary} />
       </TouchableOpacity>
 
-      {Platform.OS === 'android' && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            if (selectedDate) {
-              setDate(selectedDate);
-            }
-          }}
-        />
-      )}
-
-      {showDatePicker && Platform.OS === 'ios' && (
-        <View style={{ height: 300, marginBottom: 20 }}>
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="spinner"
-            onChange={(event, selectedDate) => {
-              if (selectedDate) {
-                setDate(selectedDate);
-              }
-            }}
-            style={{ backgroundColor: surfaceColor }}
-          />
-          <TouchableOpacity 
-            onPress={() => setShowDatePicker(false)}
-            style={{ position: 'absolute', top: 0, right: 16 }}
-          >
-            <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Done</Text>
-          </TouchableOpacity>
-        </View>
+      {showDatePicker && (
+        <Modal
+          visible={true}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShowDatePicker(false)}
+        >
+          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            <View style={{ backgroundColor: surfaceColor, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 40 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: borderColor }}>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ color: textSecondary, fontSize: 16 }}>Cancel</Text>
+                </TouchableOpacity>
+                <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '600' }}>Select Date</Text>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="spinner"
+                onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                  if (selectedDate) {
+                    setDate(selectedDate);
+                  }
+                }}
+                style={{ height: 200 }}
+              />
+            </View>
+          </View>
+        </Modal>
       )}
 
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Note (optional)</Text>
