@@ -136,6 +136,7 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
           text: 'Delete', 
           style: 'destructive',
           onPress: () => {
+            console.log('Deleting expense:', expenseId);
             if (expenseId) {
               deleteExpense(expenseId);
               navigation.goBack();
@@ -214,17 +215,13 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
           <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Update</Text>
         </AnimatedButton>
       ) : (
-        <TouchableOpacity 
+        <AnimatedButton 
           onPress={handleDelete}
-          style={{ 
-            backgroundColor: isDark ? '#EF4444' : '#DC2626', 
-            padding: 14, 
-            borderRadius: 8, 
-            alignItems: 'center' 
-          }}
+          colorScheme={colorScheme}
+          isDelete={true}
         >
           <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Delete</Text>
-        </TouchableOpacity>
+        </AnimatedButton>
       )}
     </View>
   );
