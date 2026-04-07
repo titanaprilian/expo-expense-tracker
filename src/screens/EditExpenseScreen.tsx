@@ -245,15 +245,32 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
       </TouchableOpacity>
 
       {showDatePicker && (
-        <View style={{ marginBottom: 20 }}>
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="spinner"
-            onChange={handleDateChange}
-            themeVariant={isDark ? 'dark' : 'light'}
-          />
-        </View>
+        <Modal
+          visible={true}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShowDatePicker(false)}
+        >
+          <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' }}>
+            <View style={{ backgroundColor: surfaceColor, paddingBottom: 40 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: borderColor }}>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ color: textSecondary, fontSize: 16 }}>Cancel</Text>
+                </TouchableOpacity>
+                <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '600' }}>Select Date</Text>
+                <View style={{ width: 60 }} />
+              </View>
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="spinner"
+                onChange={handleDateChange}
+                themeVariant={isDark ? 'dark' : 'light'}
+                style={{ height: 200 }}
+              />
+            </View>
+          </View>
+        </Modal>
       )}
 
       {hasChanges ? (
