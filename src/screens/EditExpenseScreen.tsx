@@ -10,6 +10,7 @@ import { AnimatedButton } from '../components/AnimatedButton';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import type { Expense } from '../features/expense/types';
+import { formatRupiah, parseRupiah } from '../utils/currency';
 
 type EditExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EditExpense'>;
@@ -92,15 +93,25 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
   const expenses = useExpenseStore((state) => state.expenses);
   const existingExpense = expenses.find((e) => e.id === expenseId);
   
-  const [amount, setAmount] = useState(existingExpense?.amount.toString() || '');
+  const [amount, setAmount] = useState(existingExpense ? formatRupiah(existingExpense.amount) : '');
   const [category, setCategory] = useState(existingExpense?.category || CATEGORIES[0]);
   const [note, setNote] = useState(existingExpense?.note || '');
+
+  const handleAmountChange = (value: string) => {
+    const numericValue = parseRupiah(value);
+    if (numericValue > 0) {
+      setAmount(formatRupiah(numericValue));
+    } else {
+      setAmount(value.replace(/[^0-9]/g, ''));
+    }
+  };
 
   const handleUpdate = () => {
     if (!expenseId || !amount) return;
     
+    const numericAmount = parseRupiah(amount);
     updateExpense(expenseId, {
-      amount: parseFloat(amount),
+      amount: numericAmount,
       category,
       note,
     });
@@ -130,7 +141,7 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
           fontSize: 16,
         }}
         value={amount}
-        onChangeText={setAmount}
+        onChangeText={handleAmountChange}
         keyboardType="numeric"
         placeholder="Enter amount"
         placeholderTextColor={textMuted}
