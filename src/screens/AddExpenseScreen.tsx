@@ -1,4 +1,4 @@
-import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -8,6 +8,7 @@ import { COLORS } from '../constants/colors';
 import { AnimatedButton } from '../components/AnimatedButton';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 type AddExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'AddExpense'>;
@@ -142,8 +143,9 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Date</Text>
       <TouchableOpacity
         onPress={() => {
-          console.log('Date button pressed, setting showDatePicker to true');
-          setShowDatePicker(true);
+          if (Platform.OS === 'ios') {
+            setShowDatePicker(true);
+          }
         }}
         style={{
           borderWidth: 1,
@@ -161,87 +163,39 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
         <Ionicons name="calendar-outline" size={20} color={textSecondary} />
       </TouchableOpacity>
 
-      {showDatePicker && (
-        <Modal
-          visible={true}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setShowDatePicker(false)}
-        >
+      {Platform.OS === 'android' && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            if (selectedDate) {
+              setDate(selectedDate);
+            }
+          }}
+        />
+      )}
+
+      {showDatePicker && Platform.OS === 'ios' && (
+        <View style={{ height: 300, marginBottom: 20 }}>
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="spinner"
+            onChange={(event, selectedDate) => {
+              if (selectedDate) {
+                setDate(selectedDate);
+              }
+            }}
+            style={{ backgroundColor: surfaceColor }}
+          />
           <TouchableOpacity 
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}
-            activeOpacity={1}
             onPress={() => setShowDatePicker(false)}
+            style={{ position: 'absolute', top: 0, right: 16 }}
           >
-            <TouchableOpacity 
-              activeOpacity={1}
-              onPress={() => {}}
-              style={{ backgroundColor: surfaceColor, borderRadius: 16, padding: 20, width: '85%' }}
-            >
-              <Text style={{ fontSize: 18, fontWeight: '600', color: textPrimary, marginBottom: 16, textAlign: 'center' }}>Select Date</Text>
-              
-              <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 12, marginBottom: 20 }}>
-                <TouchableOpacity 
-                  onPress={() => {
-                    const today = new Date();
-                    setDate(today);
-                    setShowDatePicker(false);
-                  }}
-                  style={{ paddingVertical: 12, paddingHorizontal: 20, backgroundColor: COLORS.primary, borderRadius: 8 }}
-                >
-                  <Text style={{ color: '#FFFFFF', fontWeight: '600' }}>Today</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  onPress={() => {
-                    const yesterday = new Date();
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    setDate(yesterday);
-                    setShowDatePicker(false);
-                  }}
-                  style={{ paddingVertical: 12, paddingHorizontal: 20, backgroundColor: isDark ? '#374151' : '#E5E7EB', borderRadius: 8 }}
-                >
-                  <Text style={{ color: textPrimary, fontWeight: '600' }}>Yesterday</Text>
-                </TouchableOpacity>
-              </View>
-              
-              <View style={{ borderTopWidth: 1, borderTopColor: borderColor, paddingTop: 16 }}>
-                <Text style={{ fontSize: 14, color: textSecondary, marginBottom: 8 }}>Or enter date:</Text>
-                <TextInput
-                  style={{
-                    borderWidth: 1,
-                    padding: 12,
-                    borderRadius: 8,
-                    backgroundColor: isDark ? COLORS.dark.background : COLORS.background,
-                    borderColor: borderColor,
-                    color: textPrimary,
-                    fontSize: 16,
-                  }}
-                  placeholder="DD/MM/YYYY"
-                  placeholderTextColor={textMuted}
-                  onChangeText={(text) => {
-                    const parts = text.split('/');
-                    if (parts.length === 3) {
-                      const day = parseInt(parts[0], 10);
-                      const month = parseInt(parts[1], 10) - 1;
-                      const year = parseInt(parts[2], 10);
-                      if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                        setDate(new Date(year, month, day));
-                      }
-                    }
-                  }}
-                />
-              </View>
-              
-              <TouchableOpacity 
-                onPress={() => setShowDatePicker(false)}
-                style={{ marginTop: 20, padding: 12, alignItems: 'center' }}
-              >
-                <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Close</Text>
-              </TouchableOpacity>
-            </TouchableOpacity>
+            <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Done</Text>
           </TouchableOpacity>
-        </Modal>
+        </View>
       )}
 
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Note (optional)</Text>
