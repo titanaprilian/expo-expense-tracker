@@ -1,18 +1,18 @@
-# Issue: Redesign "Add Expense" Button to Floating Action Button (FAB)
+# Issue: Manual Date Selection and Date-based Grouping
 
 ## Overview
-The current "Add Expense" button is a full-width button located below the dashboard, which takes up significant vertical space. We want to move to a more modern "Floating Action Button" (FAB) pattern.
+Currently, expenses are automatically assigned the creation date, making it impossible to log past or future transactions. Additionally, the main expense list is a flat list that becomes difficult to read as it grows.
 
 ## Goals
-- **UI Change**: Replace the existing full-width "Add Expense" button with a circular button.
-- **Positioning**: The new button should be fixed to the bottom right corner of the Home screen.
-- **Iconography**: Use a "+" (plus) icon inside the circular button.
-- **Visuals**: Ensure the button has a distinct background color (e.g., the primary theme color) and a subtle shadow to make it appear "floating."
+- **Manual Date Entry**: Add a date picker or input field to both the "Add Expense" and "Edit Expense" screens.
+- **Data Model**: Ensure the user-selected date is saved in the expense record.
+- **Organized View**: Group the expenses on the Home screen by their date (e.g., "Today", "Yesterday", or "April 7, 2026").
+- **Sorting**: Ensure expenses within each group are sorted chronologically (or reverse-chronologically).
 
 ## Technical Guidance
-- **Styling**: Use **NativeWind** (Tailwind CSS) for positioning (`absolute`, `bottom-8`, `right-8`).
-- **Icons**: Use `Ionicons` (already used in the project) for the plus icon.
-- **Component**: Ensure the button remains accessible and has a proper hit area.
+- **Picker**: Use a standard React Native / Expo date picker library.
+- **UI Logic**: Consider switching the `FlatList` on the Home screen to a `SectionList` to handle the grouped data structure more effectively.
+- **Formatting**: Use a consistent date format for the group headers.
 
 ## Note for Developer
-The button should stay in place even when the expense list is scrolled. Think about the z-index and how it interacts with the list items behind it. Feel free to add a slight elevation or shadow to make it pop.
+The goal is to give users more control over their financial history. The grouping should make the dashboard feel organized and easy to scan. Think about how to handle empty states or very long lists within a single date group.
