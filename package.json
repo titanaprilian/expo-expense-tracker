@@ -19,25 +19,29 @@
   },
   "homepage": "https://github.com/titanaprilian/expo-expense-tracker#readme",
   "dependencies": {
-    "@react-native-async-storage/async-storage": "2.2.0",
-    "@react-native-community/datetimepicker": "8.6.0",
-    "@react-navigation/native": "^7.2.2",
-    "@react-navigation/native-stack": "^7.14.10",
-    "expo": "^55.0.9",
-    "expo-constants": "~55.0.9",
-    "expo-linking": "~55.0.9",
+    "@expo/metro-runtime": "~6.1.2",
+    "@react-native-async-storage/async-storage": "2.1.0",
+    "@react-native-community/datetimepicker": "^7.7.0",
+    "@react-navigation/native": "^6.1.18",
+    "@react-navigation/native-stack": "^6.11.0",
+    "expo": "54.0.0",
+    "expo-constants": "14.0.0",
+    "expo-linking": "6.0.0",
     "nativewind": "^4.2.3",
-    "react-native": "0.83.4",
-    "react-native-reanimated": "^4.3.0",
-    "react-native-safe-area-context": "~5.6.2",
-    "react-native-screens": "~4.23.0",
-    "react-native-web": "^0.21.0",
-    "zustand": "^5.0.12"
+    "react": "18.3.1",
+    "react-dom": "^18.3.1",
+    "react-native": "0.76.6",
+    "react-native-reanimated": "~3.16.0",
+    "react-native-safe-area-context": "4.12.0",
+    "react-native-screens": "~3.35.0",
+    "react-native-web": "0.19.10",
+    "react-native-worklets": "^0.4.0",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
-    "@types/react": "~19.2.10",
-    "expo-dev-client": "~55.0.19",
+    "@types/react": "~18.3.0",
+    "expo-dev-client": "4.0.0",
     "tailwindcss": "^3.4.19",
-    "typescript": "~5.9.2"
+    "typescript": "~5.4.0"
   }
 }
