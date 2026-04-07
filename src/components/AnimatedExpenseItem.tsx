@@ -19,6 +19,7 @@ export function AnimatedExpenseItem({ item, index, colorScheme, onPress }: Anima
   
   const translateY = useSharedValue(50);
   const opacity = useSharedValue(0);
+  const pressedScale = useSharedValue(1);
 
   useEffect(() => {
     translateY.value = withDelay(
@@ -29,12 +30,23 @@ export function AnimatedExpenseItem({ item, index, colorScheme, onPress }: Anima
       index * 100,
       withSpring(1, { damping: 18, stiffness: 150 })
     );
-  }, []);
+  }, [index]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-    opacity: opacity.value,
-  }));
+  const animatedStyle = useAnimatedStyle(() => {
+    'worklet';
+    return {
+      transform: `translateY(${translateY.value}) scale(${pressedScale.value})`,
+      opacity: opacity.value,
+    };
+  });
+
+  const handlePressIn = () => {
+    pressedScale.value = withSpring(0.97, { damping: 15, stiffness: 300 });
+  };
+
+  const handlePressOut = () => {
+    pressedScale.value = withSpring(1, { damping: 15, stiffness: 300 });
+  };
 
   const cardBackgroundColor = isDark ? COLORS.dark.surface : COLORS.surface;
   const textPrimary = isDark ? COLORS.dark.text.primary : COLORS.text.primary;
@@ -42,7 +54,11 @@ export function AnimatedExpenseItem({ item, index, colorScheme, onPress }: Anima
   const textMuted = isDark ? COLORS.dark.text.muted : COLORS.text.muted;
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable 
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+    >
       <Animated.View style={[styles.container, animatedStyle, { backgroundColor: cardBackgroundColor }]}>
         <View style={styles.row}>
           <View style={styles.leftContent}>
