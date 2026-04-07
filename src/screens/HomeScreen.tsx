@@ -7,7 +7,7 @@ import { COLORS } from '../constants/colors';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { AnimatedExpenseItem } from '../components/AnimatedExpenseItem';
-import { AnimatedButton } from '../components/AnimatedButton';
+import { FloatingActionButton } from '../components/FloatingActionButton';
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -35,13 +35,6 @@ export default function HomeScreen({ navigation, colorScheme }: HomeScreenProps)
       
       <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: textPrimary }}>Expenses</Text>
       
-      <AnimatedButton 
-        onPress={() => navigation.navigate('AddExpense')}
-        colorScheme={colorScheme}
-      >
-        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Add Expense</Text>
-      </AnimatedButton>
-      
       {expenses.length === 0 ? (
         <Text style={{ textAlign: 'center', marginTop: 16, color: textMuted }}>No expenses yet</Text>
       ) : (
@@ -59,6 +52,11 @@ export default function HomeScreen({ navigation, colorScheme }: HomeScreenProps)
           style={{ marginTop: 16 }}
         />
       )}
+
+      <FloatingActionButton 
+        onPress={() => navigation.navigate('AddExpense')}
+        colorScheme={colorScheme}
+      />
     </View>
   );
 }
