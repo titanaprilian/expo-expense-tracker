@@ -128,6 +128,7 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
 
   const handleDelete = useCallback(() => {
     console.log('handleDelete called, expenseId:', expenseId);
+    console.log('About to call Alert.alert');
     Alert.alert(
       'Delete Expense',
       'Are you sure you want to delete this expense?',
@@ -153,6 +154,7 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
         },
       ]
     );
+    console.log('Alert.alert called');
   }, [expenseId, deleteExpense, navigation]);
 
   const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
