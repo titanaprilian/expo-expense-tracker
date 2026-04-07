@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -251,17 +251,19 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
                   <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Done</Text>
                 </TouchableOpacity>
               </View>
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display="default"
-                onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
-                  if (selectedDate) {
-                    setDate(selectedDate);
-                  }
-                }}
-                style={{ height: 200 }}
-              />
+              {(Platform.OS === 'ios' || Platform.OS === 'android') && (
+                <DateTimePicker
+                  value={date}
+                  mode="date"
+                  display="default"
+                  onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                    if (selectedDate) {
+                      setDate(selectedDate);
+                    }
+                  }}
+                  style={{ height: 200 }}
+                />
+              )}
             </View>
           </View>
         </Modal>

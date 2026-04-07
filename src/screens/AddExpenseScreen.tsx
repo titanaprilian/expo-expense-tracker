@@ -177,17 +177,19 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
                   <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Done</Text>
                 </TouchableOpacity>
               </View>
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display="default"
-                onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
-                  if (selectedDate) {
-                    setDate(selectedDate);
-                  }
-                }}
-                style={{ height: 200 }}
-              />
+              {(Platform.OS === 'ios' || Platform.OS === 'android') && (
+                <DateTimePicker
+                  value={date}
+                  mode="date"
+                  display="default"
+                  onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                    if (selectedDate) {
+                      setDate(selectedDate);
+                    }
+                  }}
+                  style={{ height: 200 }}
+                />
+              )}
             </View>
           </View>
         </Modal>
