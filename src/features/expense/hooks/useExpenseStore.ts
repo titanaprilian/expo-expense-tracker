@@ -11,6 +11,7 @@ interface ExpenseState {
   expenses: Expense[];
   addExpense: (expense: Expense) => void;
   updateExpense: (id: string, updates: Partial<Expense>) => void;
+  deleteExpense: (id: string) => void;
   hydrated: boolean;
   hydrate: () => Promise<void>;
   themePreference: ThemePreference;
@@ -47,6 +48,13 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       const newExpenses = state.expenses.map((expense) =>
         expense.id === id ? { ...expense, ...updates } : expense
       );
+      AsyncStorage.setItem(EXPENSE_STORAGE_KEY, JSON.stringify(newExpenses));
+      return { expenses: newExpenses };
+    });
+  },
+  deleteExpense: (id) => {
+    set((state) => {
+      const newExpenses = state.expenses.filter((expense) => expense.id !== id);
       AsyncStorage.setItem(EXPENSE_STORAGE_KEY, JSON.stringify(newExpenses));
       return { expenses: newExpenses };
     });

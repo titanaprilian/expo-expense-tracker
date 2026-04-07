@@ -9,11 +9,12 @@ interface AnimatedButtonProps {
   style?: ViewStyle;
   disabled?: boolean;
   colorScheme?: ColorSchemeName;
+  isDelete?: boolean;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function AnimatedButton({ onPress, children, className, style, disabled, colorScheme }: AnimatedButtonProps) {
+export function AnimatedButton({ onPress, children, className, style, disabled, colorScheme, isDelete }: AnimatedButtonProps) {
   const isDark = colorScheme === 'dark';
   
   const scale = useSharedValue(1);
@@ -24,20 +25,31 @@ export function AnimatedButton({ onPress, children, className, style, disabled, 
   }));
 
   const handlePressIn = () => {
+    console.log('AnimatedButton handlePressIn');
     scale.value = withSpring(0.95, { damping: 15, stiffness: 300 });
   };
 
   const handlePressOut = () => {
+    console.log('AnimatedButton handlePressOut');
     scale.value = withSpring(1, { damping: 15, stiffness: 300 });
   };
 
+  const handlePress = () => {
+    console.log('AnimatedButton onPress called');
+    onPress();
+  };
+
+  const backgroundColor = isDelete 
+    ? (isDark ? '#EF4444' : '#DC2626')
+    : (isDark ? '#6366F1' : COLORS.primary);
+
   return (
     <AnimatedPressable
-      onPress={onPress}
+      onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       disabled={disabled}
-      style={[animatedStyle, styles.button, { backgroundColor: isDark ? '#6366F1' : COLORS.primary }]}
+      style={[animatedStyle, styles.button, { backgroundColor }]}
     >
       {children}
     </AnimatedPressable>

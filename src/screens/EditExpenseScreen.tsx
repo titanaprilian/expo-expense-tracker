@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Text, View, TextInput, TouchableOpacity, ColorSchemeName } from 'react-native';
+import { useEffect, useState, useCallback } from 'react';
+import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -88,6 +88,7 @@ function CategoryChip({
 export default function EditExpenseScreen({ navigation, colorScheme, route }: EditExpenseScreenProps) {
   const isDark = colorScheme === 'dark';
   const updateExpense = useExpenseStore((state) => state.updateExpense);
+  const deleteExpense = useExpenseStore((state) => state.deleteExpense);
   
   const expenseId = route?.params?.expenseId;
   const expenses = useExpenseStore((state) => state.expenses);
@@ -96,6 +97,13 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
   const [amount, setAmount] = useState(existingExpense ? formatRupiah(existingExpense.amount) : '');
   const [category, setCategory] = useState(existingExpense?.category || CATEGORIES[0]);
   const [note, setNote] = useState(existingExpense?.note || '');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const hasChanges = existingExpense && (
+    parseRupiah(amount) !== existingExpense.amount ||
+    category !== existingExpense.category ||
+    note !== (existingExpense.note || '')
+  );
 
   const handleAmountChange = (value: string) => {
     const numericValue = parseRupiah(value);
@@ -117,6 +125,28 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
     });
     
     navigation.goBack();
+  };
+
+  const confirmDelete = () => {
+    console.log('Delete confirmed, calling deleteExpense with:', expenseId);
+    console.log('Current expenses before delete:', useExpenseStore.getState().expenses);
+    if (expenseId) {
+      console.log('About to call deleteExpense');
+      deleteExpense(expenseId);
+      console.log('After deleteExpense call');
+      console.log('Expenses after delete:', useExpenseStore.getState().expenses);
+      setShowDeleteModal(false);
+      navigation.goBack();
+    } else {
+      console.log('expenseId is falsy:', expenseId);
+    }
+  };
+
+  const handleDeletePress = () => {
+    console.log('handleDelete called, expenseId:', expenseId);
+    console.log('About to show delete modal');
+    setShowDeleteModal(true);
+    console.log('Modal should be shown now');
   };
 
   const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
@@ -179,12 +209,50 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
         placeholderTextColor={textMuted}
       />
 
-      <AnimatedButton 
-        onPress={handleUpdate}
-        colorScheme={colorScheme}
+      {hasChanges ? (
+        <AnimatedButton 
+          onPress={handleUpdate}
+          colorScheme={colorScheme}
+        >
+          <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Update</Text>
+        </AnimatedButton>
+      ) : (
+        <AnimatedButton 
+          onPress={handleDeletePress}
+          colorScheme={colorScheme}
+          isDelete={true}
+        >
+          <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Delete</Text>
+        </AnimatedButton>
+      )}
+
+      <Modal
+        visible={showDeleteModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowDeleteModal(false)}
       >
-        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Update</Text>
-      </AnimatedButton>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <View style={{ backgroundColor: surfaceColor, padding: 24, borderRadius: 12, width: '80%' }}>
+            <Text style={{ fontSize: 18, fontWeight: '600', color: textPrimary, marginBottom: 8 }}>Delete Expense</Text>
+            <Text style={{ fontSize: 16, color: textSecondary, marginBottom: 24 }}>Are you sure you want to delete this expense?</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 12 }}>
+              <TouchableOpacity 
+                onPress={() => setShowDeleteModal(false)}
+                style={{ paddingVertical: 10, paddingHorizontal: 20 }}
+              >
+                <Text style={{ color: textSecondary, fontSize: 16 }}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={confirmDelete}
+                style={{ backgroundColor: '#DC2626', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8 }}
+              >
+                <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
