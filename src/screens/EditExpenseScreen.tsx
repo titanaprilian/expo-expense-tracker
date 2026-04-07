@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Modal, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -11,6 +11,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import type { Expense } from '../features/expense/types';
 import { formatRupiah, parseRupiah } from '../utils/currency';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 type EditExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EditExpense'>;
@@ -97,12 +98,15 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
   const [amount, setAmount] = useState(existingExpense ? formatRupiah(existingExpense.amount) : '');
   const [category, setCategory] = useState(existingExpense?.category || CATEGORIES[0]);
   const [note, setNote] = useState(existingExpense?.note || '');
+  const [date, setDate] = useState(existingExpense ? new Date(existingExpense.date) : new Date());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const hasChanges = existingExpense && (
     parseRupiah(amount) !== existingExpense.amount ||
     category !== existingExpense.category ||
-    note !== (existingExpense.note || '')
+    note !== (existingExpense.note || '') ||
+    date.toISOString().split('T')[0] !== new Date(existingExpense.date).toISOString().split('T')[0]
   );
 
   const handleAmountChange = (value: string) => {
@@ -122,31 +126,32 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
       amount: numericAmount,
       category,
       note,
+      date: date.toISOString(),
     });
     
     navigation.goBack();
   };
 
   const confirmDelete = () => {
-    console.log('Delete confirmed, calling deleteExpense with:', expenseId);
-    console.log('Current expenses before delete:', useExpenseStore.getState().expenses);
     if (expenseId) {
-      console.log('About to call deleteExpense');
       deleteExpense(expenseId);
-      console.log('After deleteExpense call');
-      console.log('Expenses after delete:', useExpenseStore.getState().expenses);
       setShowDeleteModal(false);
       navigation.goBack();
-    } else {
-      console.log('expenseId is falsy:', expenseId);
     }
   };
 
   const handleDeletePress = () => {
-    console.log('handleDelete called, expenseId:', expenseId);
-    console.log('About to show delete modal');
     setShowDeleteModal(true);
-    console.log('Modal should be shown now');
+  };
+
+  const formatDisplayDate = (d: Date) => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (d.toDateString() === today.toDateString()) return 'Today';
+    if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    return d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
   const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
@@ -208,6 +213,61 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
         placeholder="Enter note"
         placeholderTextColor={textMuted}
       />
+
+      <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Date</Text>
+      <TouchableOpacity
+        onPress={() => setShowDatePicker(true)}
+        style={{
+          borderWidth: 1,
+          padding: 12,
+          marginBottom: 20,
+          borderRadius: 8,
+          backgroundColor: surfaceColor,
+          borderColor: borderColor,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Text style={{ color: textPrimary, fontSize: 16 }}>{formatDisplayDate(date)}</Text>
+        <Ionicons name="calendar-outline" size={20} color={textSecondary} />
+      </TouchableOpacity>
+
+      {showDatePicker && (
+        <Modal
+          visible={true}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShowDatePicker(false)}
+        >
+          <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+            <View style={{ backgroundColor: surfaceColor, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingBottom: 40 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: borderColor }}>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ color: textSecondary, fontSize: 16 }}>Cancel</Text>
+                </TouchableOpacity>
+                <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '600' }}>Select Date</Text>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              {(Platform.OS === 'ios' || Platform.OS === 'android') && (
+                <DateTimePicker
+                  value={date}
+                  mode="date"
+                  display="default"
+                  onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                    if (selectedDate) {
+                      setDate(selectedDate);
+                    }
+                  }}
+                  style={{ height: 200 }}
+                />
+              )}
+            </View>
+          </View>
+        </Modal>
+      )}
 
       {hasChanges ? (
         <AnimatedButton 

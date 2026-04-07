@@ -1,18 +1,20 @@
-# Issue: Redesign "Add Expense" Button to Floating Action Button (FAB)
+# Issue: Fix Invisible Date Picker
 
 ## Overview
-The current "Add Expense" button is a full-width button located below the dashboard, which takes up significant vertical space. We want to move to a more modern "Floating Action Button" (FAB) pattern.
+The current implementation of the date picker shows the modal container and the header (Cancel/Done buttons), but the actual calendar or spinner is invisible to the user.
+
+## The Problem
+Using `display="spinner"` inside a `Modal` often leads to layout issues where the picker has zero height or is rendered outside the visible area, especially when specific `style` properties are missing or conflicting with the modal's container.
 
 ## Goals
-- **UI Change**: Replace the existing full-width "Add Expense" button with a circular button.
-- **Positioning**: The new button should be fixed to the bottom right corner of the Home screen.
-- **Iconography**: Use a "+" (plus) icon inside the circular button.
-- **Visuals**: Ensure the button has a distinct background color (e.g., the primary theme color) and a subtle shadow to make it appear "floating."
+- **Fix Visibility**: Ensure the date picker is fully visible when the modal opens.
+- **Platform Defaults**: Change the picker to use the system default display mode (`default`) for better reliability.
+- **Layout**: Ensure the picker occupies the correct space within the modal.
 
 ## Technical Guidance
-- **Styling**: Use **NativeWind** (Tailwind CSS) for positioning (`absolute`, `bottom-8`, `right-8`).
-- **Icons**: Use `Ionicons` (already used in the project) for the plus icon.
-- **Component**: Ensure the button remains accessible and has a proper hit area.
+- **Display Mode**: Change `display="spinner"` to `display="default"` (or remove the prop to use the default).
+- **Styling**: On iOS, if you must use `spinner`, ensure the `DateTimePicker` has an explicit `width` and `height` that fits within the parent `View`.
+- **Simplification**: Consider if a `Modal` is strictly necessary on Android, as the library already provides a native modal dialog for that platform.
 
 ## Note for Developer
-The button should stay in place even when the expense list is scrolled. Think about the z-index and how it interacts with the list items behind it. Feel free to add a slight elevation or shadow to make it pop.
+Test this on both iOS and Android if possible. The `default` display mode is generally the most robust and matches user expectations for each platform.

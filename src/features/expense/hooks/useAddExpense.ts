@@ -14,6 +14,7 @@ export const useAddExpense = (navigation: AddExpenseScreenProps['navigation']) =
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [note, setNote] = useState('');
+  const [date, setDate] = useState(new Date());
   const addExpense = useExpenseStore((state) => state.addExpense);
 
   const handleAmountChange = (value: string) => {
@@ -38,7 +39,7 @@ export const useAddExpense = (navigation: AddExpenseScreenProps['navigation']) =
       amount: numericAmount,
       category,
       note: note || '',
-      date: new Date().toISOString(),
+      date: date.toISOString(),
     };
 
     addExpense(expense);
@@ -52,6 +53,8 @@ export const useAddExpense = (navigation: AddExpenseScreenProps['navigation']) =
     setCategory,
     note,
     setNote,
+    date,
+    setDate,
     handleSave,
   };
 };
