@@ -1,0 +1,16 @@
+graph TD
+    App[App.tsx] --> Nav[AppNavigator.tsx]
+    App --> Store[useExpenseStore.ts]
+    
+    Nav --> Home[HomeScreen.tsx]
+    Nav --> Add[AddExpenseScreen.tsx]
+    
+    Home --> Store
+    Home --> Utils[currency.ts]
+    
+    Add --> AddHook[useAddExpense.ts]
+    AddHook --> Store
+    AddHook --> Utils
+    
+    Store --> AS[AsyncStorage]
+    Store --> Types[Expense Type]
