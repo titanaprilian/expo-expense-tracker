@@ -171,34 +171,14 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
       </TouchableOpacity>
 
       {showDatePicker && (
-        <Modal
-          visible={true}
-          transparent={true}
-          animationType="slide"
-          onRequestClose={() => setShowDatePicker(false)}
-        >
-          <TouchableOpacity 
-            style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }} 
-            activeOpacity={1} 
-            onPress={() => setShowDatePicker(false)}
-          >
-            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: surfaceColor }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: borderColor }}>
-                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                  <Text style={{ color: textSecondary, fontSize: 16 }}>Cancel</Text>
-                </TouchableOpacity>
-                <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '600' }}>Select Date</Text>
-                <View style={{ width: 60 }} />
-              </View>
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display="spinner"
-                onChange={handleDateChange}
-              />
-            </View>
-          </TouchableOpacity>
-        </Modal>
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}>
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        </View>
       )}
 
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Note (optional)</Text>
