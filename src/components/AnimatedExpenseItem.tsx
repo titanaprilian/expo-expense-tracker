@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useColorScheme } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withDelay } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { CATEGORY_ICONS, CATEGORY_COLORS } from '../features/expense/constants/categoryIcons';
@@ -12,6 +12,9 @@ interface AnimatedExpenseItemProps {
 }
 
 export function AnimatedExpenseItem({ item, index }: AnimatedExpenseItemProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
   const translateY = useSharedValue(50);
   const opacity = useSharedValue(0);
 
@@ -31,21 +34,26 @@ export function AnimatedExpenseItem({ item, index }: AnimatedExpenseItemProps) {
     opacity: opacity.value,
   }));
 
+  const cardBackgroundColor = isDark ? '#1E293B' : '#FFFFFF';
+  const textPrimary = isDark ? '#F8FAFC' : '#1F2937';
+  const textSecondary = isDark ? '#E2E8F0' : '#6B7280';
+  const textMuted = isDark ? '#94A3B8' : '#9CA3AF';
+
   return (
-    <Animated.View style={[styles.container, animatedStyle]}>
+    <Animated.View style={[styles.container, animatedStyle, { backgroundColor: cardBackgroundColor }]}>
       <View style={styles.row}>
         <View style={styles.leftContent}>
           <View style={[styles.iconContainer, { backgroundColor: CATEGORY_COLORS[item.category] + '20' }]}>
             <Ionicons name={CATEGORY_ICONS[item.category]} size={20} color={CATEGORY_COLORS[item.category]} />
           </View>
-          <Text style={styles.category}>{item.category}</Text>
+          <Text style={[styles.category, { color: textPrimary }]}>{item.category}</Text>
         </View>
-        <Text style={styles.amount}>{formatRupiah(item.amount)}</Text>
+        <Text style={[styles.amount, { color: isDark ? '#34D399' : '#10B981' }]}>{formatRupiah(item.amount)}</Text>
       </View>
       {item.note ? (
-        <Text style={styles.note}>{item.note}</Text>
+        <Text style={[styles.note, { color: textSecondary }]}>{item.note}</Text>
       ) : null}
-      <Text style={styles.date}>
+      <Text style={[styles.date, { color: textMuted }]}>
         {new Date(item.date).toLocaleDateString()}
       </Text>
     </Animated.View>
@@ -54,7 +62,6 @@ export function AnimatedExpenseItem({ item, index }: AnimatedExpenseItemProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
     padding: 16,
     marginBottom: 8,
     borderRadius: 12,
@@ -84,21 +91,17 @@ const styles = StyleSheet.create({
   category: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
   },
   amount: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#10B981',
   },
   note: {
     fontSize: 14,
     marginTop: 8,
-    color: '#6B7280',
   },
   date: {
     fontSize: 12,
     marginTop: 8,
-    color: '#9CA3AF',
   },
 });
