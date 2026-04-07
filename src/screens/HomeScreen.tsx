@@ -1,4 +1,4 @@
-import { Text, View, FlatList, useColorScheme } from 'react-native';
+import { Text, View, FlatList, ColorSchemeName } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import { useTotalSpending } from '../features/expense/hooks/useTotalSpending';
@@ -11,10 +11,10 @@ import { AnimatedButton } from '../components/AnimatedButton';
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
+  colorScheme?: ColorSchemeName;
 };
 
-export default function HomeScreen({ navigation }: HomeScreenProps) {
-  const colorScheme = useColorScheme();
+export default function HomeScreen({ navigation, colorScheme }: HomeScreenProps) {
   const expenses = useExpenseStore((state) => state.expenses);
   const totalSpending = useTotalSpending();
   
@@ -24,10 +24,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const textPrimary = isDark ? COLORS.dark.text.primary : COLORS.text.primary;
   const textSecondary = isDark ? COLORS.dark.text.secondary : COLORS.text.secondary;
   const textMuted = isDark ? COLORS.dark.text.muted : COLORS.text.muted;
+  const borderColor = isDark ? COLORS.dark.border : COLORS.border;
 
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor }}>
-      <View style={{ backgroundColor: surfaceColor, padding: 16, marginBottom: 16, borderRadius: 12, borderWidth: 1, borderColor: isDark ? COLORS.dark.border : COLORS.border }}>
+      <View style={{ backgroundColor: surfaceColor, padding: 16, marginBottom: 16, borderRadius: 12, borderWidth: 1, borderColor }}>
         <Text style={{ fontSize: 14, color: textSecondary }}>Total Spending</Text>
         <Text style={{ fontSize: 28, fontWeight: 'bold', marginTop: 4, color: textPrimary }}>{formatRupiah(totalSpending)}</Text>
       </View>
@@ -36,6 +37,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       
       <AnimatedButton 
         onPress={() => navigation.navigate('AddExpense')}
+        colorScheme={colorScheme}
       >
         <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Add Expense</Text>
       </AnimatedButton>

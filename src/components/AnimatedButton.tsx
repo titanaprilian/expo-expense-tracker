@@ -1,6 +1,5 @@
-import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, Text, StyleSheet, ViewStyle, ColorSchemeName } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { useColorScheme } from 'react-native';
 import { COLORS } from '../constants/colors';
 
 interface AnimatedButtonProps {
@@ -9,12 +8,12 @@ interface AnimatedButtonProps {
   className?: string;
   style?: ViewStyle;
   disabled?: boolean;
+  colorScheme?: ColorSchemeName;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function AnimatedButton({ onPress, children, className, style, disabled }: AnimatedButtonProps) {
-  const colorScheme = useColorScheme();
+export function AnimatedButton({ onPress, children, className, style, disabled, colorScheme }: AnimatedButtonProps) {
   const isDark = colorScheme === 'dark';
   
   const scale = useSharedValue(1);

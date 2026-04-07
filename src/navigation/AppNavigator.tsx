@@ -36,7 +36,7 @@ export default function AppNavigator({ className, colorScheme }: { className?: s
         >
           <Stack.Screen
             name="Home"
-            component={HomeScreen}
+            component={(props: any) => <HomeScreen {...props} colorScheme={colorScheme} />}
             options={{ 
               title: 'Home',
               headerRight: () => <ThemeToggleButton colorScheme={colorScheme} />,
@@ -44,7 +44,7 @@ export default function AppNavigator({ className, colorScheme }: { className?: s
           />
           <Stack.Screen
             name="AddExpense"
-            component={AddExpenseScreen}
+            component={(props: any) => <AddExpenseScreen {...props} colorScheme={colorScheme} />}
             options={{ title: 'Add Expense' }}
           />
         </Stack.Navigator>

@@ -1,4 +1,4 @@
-import { Text, View, TextInput, TouchableOpacity, useColorScheme } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ColorSchemeName } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -10,6 +10,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 
 type AddExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'AddExpense'>;
+  colorScheme?: ColorSchemeName;
 };
 
 function CategoryChip({ 
@@ -79,8 +80,7 @@ function CategoryChip({
   );
 }
 
-export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) {
-  const colorScheme = useColorScheme();
+export default function AddExpenseScreen({ navigation, colorScheme }: AddExpenseScreenProps) {
   const isDark = colorScheme === 'dark';
   
   const { amount, setAmount, category, setCategory, note, setNote, handleSave } = useAddExpense(navigation);
@@ -147,6 +147,7 @@ export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) 
 
       <AnimatedButton 
         onPress={handleSave}
+        colorScheme={colorScheme}
       >
         <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Save</Text>
       </AnimatedButton>
