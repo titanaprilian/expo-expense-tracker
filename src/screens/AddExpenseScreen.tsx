@@ -106,6 +106,7 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
+    console.log('DateTimePicker onChange called', event, selectedDate);
     setShowDatePicker(false);
     if (selectedDate) {
       setDate(selectedDate);
@@ -149,7 +150,10 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
 
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Date</Text>
       <TouchableOpacity
-        onPress={() => setShowDatePicker(true)}
+        onPress={() => {
+          console.log('Date button pressed, setting showDatePicker to true');
+          setShowDatePicker(true);
+        }}
         style={{
           borderWidth: 1,
           padding: 12,
@@ -167,12 +171,22 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
       </TouchableOpacity>
 
       {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)' }}>
+          <View style={{ backgroundColor: surfaceColor, padding: 20, borderRadius: 12 }}>
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="spinner"
+              onChange={handleDateChange}
+            />
+            <TouchableOpacity 
+              onPress={() => setShowDatePicker(false)}
+              style={{ padding: 10, alignItems: 'center' }}
+            >
+              <Text style={{ color: textPrimary, fontSize: 16 }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       )}
 
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Note (optional)</Text>
