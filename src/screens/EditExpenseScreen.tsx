@@ -11,7 +11,6 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import type { Expense } from '../features/expense/types';
 import { formatRupiah, parseRupiah } from '../utils/currency';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 type EditExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'EditExpense'>;
@@ -154,14 +153,6 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
     return d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    console.log('DateTimePicker onChange called', event, selectedDate);
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
-
   const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
   const surfaceColor = isDark ? COLORS.dark.surface : COLORS.surface;
   const textPrimary = isDark ? COLORS.dark.text.primary : COLORS.text.primary;
@@ -245,15 +236,86 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
       </TouchableOpacity>
 
       {showDatePicker && (
-        <View style={{ height: 300, backgroundColor: surfaceColor, marginBottom: 20, borderRadius: 8, overflow: 'hidden' }}>
-          <DateTimePicker
-            key={date.toISOString()}
-            value={date}
-            mode="date"
-            display="spinner"
-            onChange={handleDateChange}
-          />
-        </View>
+        <Modal
+          visible={true}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowDatePicker(false)}
+        >
+          <TouchableOpacity 
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}
+            activeOpacity={1}
+            onPress={() => setShowDatePicker(false)}
+          >
+            <TouchableOpacity 
+              activeOpacity={1}
+              onPress={() => {}}
+              style={{ backgroundColor: surfaceColor, borderRadius: 16, padding: 20, width: '85%' }}
+            >
+              <Text style={{ fontSize: 18, fontWeight: '600', color: textPrimary, marginBottom: 16, textAlign: 'center' }}>Select Date</Text>
+              
+              <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 12, marginBottom: 20 }}>
+                <TouchableOpacity 
+                  onPress={() => {
+                    const today = new Date();
+                    setDate(today);
+                    setShowDatePicker(false);
+                  }}
+                  style={{ paddingVertical: 12, paddingHorizontal: 20, backgroundColor: COLORS.primary, borderRadius: 8 }}
+                >
+                  <Text style={{ color: '#FFFFFF', fontWeight: '600' }}>Today</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  onPress={() => {
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    setDate(yesterday);
+                    setShowDatePicker(false);
+                  }}
+                  style={{ paddingVertical: 12, paddingHorizontal: 20, backgroundColor: isDark ? '#374151' : '#E5E7EB', borderRadius: 8 }}
+                >
+                  <Text style={{ color: textPrimary, fontWeight: '600' }}>Yesterday</Text>
+                </TouchableOpacity>
+              </View>
+              
+              <View style={{ borderTopWidth: 1, borderTopColor: borderColor, paddingTop: 16 }}>
+                <Text style={{ fontSize: 14, color: textSecondary, marginBottom: 8 }}>Or enter date:</Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    padding: 12,
+                    borderRadius: 8,
+                    backgroundColor: isDark ? COLORS.dark.background : COLORS.background,
+                    borderColor: borderColor,
+                    color: textPrimary,
+                    fontSize: 16,
+                  }}
+                  placeholder="DD/MM/YYYY"
+                  placeholderTextColor={textMuted}
+                  onChangeText={(text) => {
+                    const parts = text.split('/');
+                    if (parts.length === 3) {
+                      const day = parseInt(parts[0], 10);
+                      const month = parseInt(parts[1], 10) - 1;
+                      const year = parseInt(parts[2], 10);
+                      if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                        setDate(new Date(year, month, day));
+                      }
+                    }
+                  }}
+                />
+              </View>
+              
+              <TouchableOpacity 
+                onPress={() => setShowDatePicker(false)}
+                style={{ marginTop: 20, padding: 12, alignItems: 'center' }}
+              >
+                <Text style={{ color: COLORS.primary, fontSize: 16, fontWeight: '600' }}>Close</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </Modal>
       )}
 
       {hasChanges ? (
