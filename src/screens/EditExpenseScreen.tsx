@@ -140,9 +140,14 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
             console.log('Delete pressed, calling deleteExpense with:', expenseId);
             console.log('Current expenses before delete:', useExpenseStore.getState().expenses);
             if (expenseId) {
+              console.log('About to call deleteExpense');
               deleteExpense(expenseId);
+              console.log('After deleteExpense call');
               console.log('Expenses after delete:', useExpenseStore.getState().expenses);
+              console.log('About to call navigation.goBack()');
               navigation.goBack();
+            } else {
+              console.log('expenseId is falsy:', expenseId);
             }
           }
         },
