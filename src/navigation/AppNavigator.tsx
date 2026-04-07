@@ -20,6 +20,7 @@ export default function AppNavigator({ className, colorScheme }: { className?: s
     <View className={`flex-1 ${className}`}>
       <NavigationContainer theme={theme}>
         <Stack.Navigator
+          id="MainStack"
           screenOptions={{
             headerStyle: {
               backgroundColor: colorScheme === 'dark' ? COLORS.dark.surface : COLORS.surface,
@@ -28,6 +29,9 @@ export default function AppNavigator({ className, colorScheme }: { className?: s
             headerTitleStyle: {
               fontWeight: 'bold',
             },
+            animation: 'slide_from_right',
+            gestureEnabled: true,
+            gestureDirection: 'horizontal',
           }}
         >
           <Stack.Screen

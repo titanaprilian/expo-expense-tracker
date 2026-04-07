@@ -3,10 +3,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import { useTotalSpending } from '../features/expense/hooks/useTotalSpending';
 import { formatRupiah } from '../utils/currency';
-import { CATEGORY_ICONS, CATEGORY_COLORS } from '../features/expense/constants/categoryIcons';
+import { CATEGORY_COLORS } from '../features/expense/constants/categoryIcons';
 import { COLORS } from '../constants/colors';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { AnimatedExpenseItem } from '../components/AnimatedExpenseItem';
+import { AnimatedButton } from '../components/AnimatedButton';
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -25,11 +27,12 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       
       <Text className="text-xl font-bold mb-4 text-primary">Expenses</Text>
       
-      <Button 
-        title="Add Expense" 
-        onPress={() => navigation.navigate('AddExpense')} 
-        color={COLORS.primary}
-      />
+      <AnimatedButton 
+        onPress={() => navigation.navigate('AddExpense')}
+        className="bg-primary p-3 rounded-lg items-center"
+      >
+        <Text className="text-surface font-semibold text-base">Add Expense</Text>
+      </AnimatedButton>
       
       {expenses.length === 0 ? (
         <Text className="text-center mt-4 text-muted">No expenses yet</Text>
@@ -37,24 +40,8 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <FlatList
           data={expenses}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View className="bg-surface p-4 mb-2 rounded-xl shadow-sm border border-color">
-              <View className="flex-row justify-between items-center">
-                <View className="flex-row items-center gap-3">
-                  <View className="w-10 h-10 rounded-lg items-center justify-center" style={{ backgroundColor: CATEGORY_COLORS[item.category] + '20' }}>
-                    <Ionicons name={CATEGORY_ICONS[item.category]} size={20} color={CATEGORY_COLORS[item.category]} />
-                  </View>
-                  <Text className="text-lg font-semibold text-primary">{item.category}</Text>
-                </View>
-                <Text className="text-xl font-bold text-success">{formatRupiah(item.amount)}</Text>
-              </View>
-              {item.note ? (
-                <Text className="text-sm mt-2 text-secondary">{item.note}</Text>
-              ) : null}
-              <Text className="text-xs mt-2 text-muted">
-                {new Date(item.date).toLocaleDateString()}
-              </Text>
-            </View>
+          renderItem={({ item, index }) => (
+            <AnimatedExpenseItem item={item} index={index} />
           )}
           className="mt-4"
         />
