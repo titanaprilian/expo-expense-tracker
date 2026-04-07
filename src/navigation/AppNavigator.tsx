@@ -20,6 +20,7 @@ export default function AppNavigator({ className, colorScheme }: { className?: s
     <View className={`flex-1 ${className}`}>
       <NavigationContainer theme={theme}>
         <Stack.Navigator
+          id="MainStack"
           screenOptions={{
             headerStyle: {
               backgroundColor: colorScheme === 'dark' ? COLORS.dark.surface : COLORS.surface,
@@ -28,11 +29,14 @@ export default function AppNavigator({ className, colorScheme }: { className?: s
             headerTitleStyle: {
               fontWeight: 'bold',
             },
+            animation: 'slide_from_right',
+            gestureEnabled: true,
+            gestureDirection: 'horizontal',
           }}
         >
           <Stack.Screen
             name="Home"
-            component={HomeScreen}
+            component={(props: any) => <HomeScreen {...props} colorScheme={colorScheme} />}
             options={{ 
               title: 'Home',
               headerRight: () => <ThemeToggleButton colorScheme={colorScheme} />,
@@ -40,7 +44,7 @@ export default function AppNavigator({ className, colorScheme }: { className?: s
           />
           <Stack.Screen
             name="AddExpense"
-            component={AddExpenseScreen}
+            component={(props: any) => <AddExpenseScreen {...props} colorScheme={colorScheme} />}
             options={{ title: 'Add Expense' }}
           />
         </Stack.Navigator>

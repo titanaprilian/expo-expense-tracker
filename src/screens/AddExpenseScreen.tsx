@@ -1,74 +1,156 @@
-import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ColorSchemeName } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { useAddExpense, CATEGORIES } from '../features/expense/hooks/useAddExpense';
 import { CATEGORY_ICONS, CATEGORY_COLORS } from '../features/expense/constants/categoryIcons';
 import { COLORS } from '../constants/colors';
+import { AnimatedButton } from '../components/AnimatedButton';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 type AddExpenseScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'AddExpense'>;
+  colorScheme?: ColorSchemeName;
 };
 
-export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) {
-  const { amount, setAmount, category, setCategory, note, setNote, handleSave } = useAddExpense(navigation);
+function CategoryChip({ 
+  category: cat, 
+  selected, 
+  onSelect,
+  isDark,
+  textSecondary
+}: { 
+  category: string; 
+  selected: boolean; 
+  onSelect: () => void;
+  isDark: boolean;
+  textSecondary: string;
+}) {
+  const scale = useSharedValue(1);
+  
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const handlePressIn = () => {
+    scale.value = withSpring(0.92, { damping: 15, stiffness: 400 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 15, stiffness: 400 });
+  };
+
+  const surfaceColor = isDark ? COLORS.dark.surface : COLORS.surface;
+  const borderColor = isDark ? COLORS.dark.border : COLORS.border;
 
   return (
-    <View className="p-4 flex-1 bg-background">
-      <Text className="text-lg font-semibold mb-2 text-primary">Amount</Text>
+    <Animated.View style={animatedStyle}>
+      <TouchableOpacity
+        onPress={onSelect}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        style={{ 
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+          paddingVertical: 8,
+          paddingHorizontal: 12,
+          borderRadius: 8,
+          borderWidth: 1,
+          backgroundColor: selected ? CATEGORY_COLORS[cat] + '20' : surfaceColor,
+          borderColor: selected ? CATEGORY_COLORS[cat] : borderColor,
+        }}
+      >
+        <Ionicons 
+          name={CATEGORY_ICONS[cat]} 
+          size={20} 
+          color={selected ? CATEGORY_COLORS[cat] : textSecondary} 
+        />
+        <Text 
+          style={{ 
+            color: selected ? CATEGORY_COLORS[cat] : textSecondary,
+            fontWeight: selected ? '600' : '400',
+            fontSize: 14,
+          }}
+        >
+          {cat}
+        </Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+}
+
+export default function AddExpenseScreen({ navigation, colorScheme }: AddExpenseScreenProps) {
+  const isDark = colorScheme === 'dark';
+  
+  const { amount, setAmount, category, setCategory, note, setNote, handleSave } = useAddExpense(navigation);
+
+  const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
+  const surfaceColor = isDark ? COLORS.dark.surface : COLORS.surface;
+  const textPrimary = isDark ? COLORS.dark.text.primary : COLORS.text.primary;
+  const textSecondary = isDark ? COLORS.dark.text.secondary : COLORS.text.secondary;
+  const textMuted = isDark ? COLORS.dark.text.muted : COLORS.text.muted;
+  const borderColor = isDark ? COLORS.dark.border : COLORS.border;
+
+  return (
+    <View style={{ flex: 1, padding: 16, backgroundColor }}>
+      <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Amount</Text>
       <TextInput
-        className="border p-3 mb-5 rounded-lg bg-surface border-color text-primary"
+        style={{
+          borderWidth: 1,
+          padding: 12,
+          marginBottom: 20,
+          borderRadius: 8,
+          backgroundColor: surfaceColor,
+          borderColor: borderColor,
+          color: textPrimary,
+          fontSize: 16,
+        }}
         value={amount}
         onChangeText={setAmount}
         keyboardType="numeric"
         placeholder="Enter amount"
-        placeholderTextColor={COLORS.text.muted}
+        placeholderTextColor={textMuted}
       />
 
-      <Text className="text-lg font-semibold mb-3 text-primary">Category</Text>
-      <View className="mb-5 flex-row flex-wrap gap-2">
+      <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 12, color: textPrimary }}>Category</Text>
+      <View style={{ marginBottom: 20, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {CATEGORIES.map((cat) => (
-          <TouchableOpacity
-            key={cat}
-            onPress={() => setCategory(cat)}
-            className="flex-row items-center gap-2 py-2 px-3 rounded-lg border"
-            style={{ 
-              backgroundColor: category === cat ? CATEGORY_COLORS[cat] + '20' : COLORS.surface,
-              borderColor: category === cat ? CATEGORY_COLORS[cat] : COLORS.border,
-            }}
-          >
-            <Ionicons 
-              name={CATEGORY_ICONS[cat]} 
-              size={20} 
-              color={category === cat ? CATEGORY_COLORS[cat] : COLORS.text.secondary} 
-            />
-            <Text 
-              style={{ 
-                color: category === cat ? CATEGORY_COLORS[cat] : COLORS.text.secondary,
-                fontWeight: category === cat ? '600' : '400',
-              }}
-            >
-              {cat}
-            </Text>
-          </TouchableOpacity>
+          <CategoryChip 
+            key={cat} 
+            category={cat} 
+            selected={category === cat}
+            onSelect={() => setCategory(cat)}
+            isDark={isDark}
+            textSecondary={textSecondary}
+          />
         ))}
       </View>
 
-      <Text className="text-lg font-semibold mb-2 text-primary">Note (optional)</Text>
+      <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Note (optional)</Text>
       <TextInput
-        className="border p-3 mb-5 rounded-lg bg-surface border-color text-primary"
+        style={{
+          borderWidth: 1,
+          padding: 12,
+          marginBottom: 20,
+          borderRadius: 8,
+          backgroundColor: surfaceColor,
+          borderColor: borderColor,
+          color: textPrimary,
+          fontSize: 16,
+        }}
         value={note}
         onChangeText={setNote}
         placeholder="Enter note"
-        placeholderTextColor={COLORS.text.muted}
+        placeholderTextColor={textMuted}
       />
 
-      <TouchableOpacity 
+      <AnimatedButton 
         onPress={handleSave}
-        className="bg-primary p-4 rounded-lg items-center"
+        colorScheme={colorScheme}
       >
-        <Text className="text-surface font-semibold text-base">Save</Text>
-      </TouchableOpacity>
+        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Save</Text>
+      </AnimatedButton>
     </View>
   );
 }

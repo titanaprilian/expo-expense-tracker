@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useExpenseStore, ThemePreference } from '../features/expense/hooks/useExpenseStore';
 import { COLORS } from '../constants/colors';
@@ -31,10 +31,11 @@ const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({ colorScheme }) =>
     setThemePreference(nextPreference);
   };
 
-  const iconColor = colorScheme === 'dark' ? COLORS.dark.text.primary : COLORS.text.primary;
+  const isDark = colorScheme === 'dark';
+  const iconColor = isDark ? COLORS.dark.text.primary : COLORS.text.primary;
 
   return (
-    <TouchableOpacity onPress={toggleTheme} className="p-2 mr-4">
+    <TouchableOpacity onPress={toggleTheme} style={{ padding: 8, marginRight: 16 }}>
       <Ionicons name={getIconName(themePreference)} size={24} color={iconColor} />
     </TouchableOpacity>
   );

@@ -1,62 +1,57 @@
-import { Text, View, Button, FlatList } from 'react-native';
+import { Text, View, FlatList, ColorSchemeName } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useExpenseStore } from '../features/expense/hooks/useExpenseStore';
 import { useTotalSpending } from '../features/expense/hooks/useTotalSpending';
 import { formatRupiah } from '../utils/currency';
-import { CATEGORY_ICONS, CATEGORY_COLORS } from '../features/expense/constants/categoryIcons';
 import { COLORS } from '../constants/colors';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { AnimatedExpenseItem } from '../components/AnimatedExpenseItem';
+import { AnimatedButton } from '../components/AnimatedButton';
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
+  colorScheme?: ColorSchemeName;
 };
 
-export default function HomeScreen({ navigation }: HomeScreenProps) {
+export default function HomeScreen({ navigation, colorScheme }: HomeScreenProps) {
   const expenses = useExpenseStore((state) => state.expenses);
   const totalSpending = useTotalSpending();
+  
+  const isDark = colorScheme === 'dark';
+  const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
+  const surfaceColor = isDark ? COLORS.dark.surface : COLORS.surface;
+  const textPrimary = isDark ? COLORS.dark.text.primary : COLORS.text.primary;
+  const textSecondary = isDark ? COLORS.dark.text.secondary : COLORS.text.secondary;
+  const textMuted = isDark ? COLORS.dark.text.muted : COLORS.text.muted;
+  const borderColor = isDark ? COLORS.dark.border : COLORS.border;
 
   return (
-    <View className="p-4 flex-1 bg-background">
-      <View className="bg-surface p-4 mb-4 rounded-xl shadow-sm border border-color">
-        <Text className="text-sm text-secondary">Total Spending</Text>
-        <Text className="text-3xl font-bold mt-1 text-primary">{formatRupiah(totalSpending)}</Text>
+    <View style={{ flex: 1, padding: 16, backgroundColor }}>
+      <View style={{ backgroundColor: surfaceColor, padding: 16, marginBottom: 16, borderRadius: 12, borderWidth: 1, borderColor }}>
+        <Text style={{ fontSize: 14, color: textSecondary }}>Total Spending</Text>
+        <Text style={{ fontSize: 28, fontWeight: 'bold', marginTop: 4, color: textPrimary }}>{formatRupiah(totalSpending)}</Text>
       </View>
       
-      <Text className="text-xl font-bold mb-4 text-primary">Expenses</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: textPrimary }}>Expenses</Text>
       
-      <Button 
-        title="Add Expense" 
-        onPress={() => navigation.navigate('AddExpense')} 
-        color={COLORS.primary}
-      />
+      <AnimatedButton 
+        onPress={() => navigation.navigate('AddExpense')}
+        colorScheme={colorScheme}
+      >
+        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Add Expense</Text>
+      </AnimatedButton>
       
       {expenses.length === 0 ? (
-        <Text className="text-center mt-4 text-muted">No expenses yet</Text>
+        <Text style={{ textAlign: 'center', marginTop: 16, color: textMuted }}>No expenses yet</Text>
       ) : (
         <FlatList
           data={expenses}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View className="bg-surface p-4 mb-2 rounded-xl shadow-sm border border-color">
-              <View className="flex-row justify-between items-center">
-                <View className="flex-row items-center gap-3">
-                  <View className="w-10 h-10 rounded-lg items-center justify-center" style={{ backgroundColor: CATEGORY_COLORS[item.category] + '20' }}>
-                    <Ionicons name={CATEGORY_ICONS[item.category]} size={20} color={CATEGORY_COLORS[item.category]} />
-                  </View>
-                  <Text className="text-lg font-semibold text-primary">{item.category}</Text>
-                </View>
-                <Text className="text-xl font-bold text-success">{formatRupiah(item.amount)}</Text>
-              </View>
-              {item.note ? (
-                <Text className="text-sm mt-2 text-secondary">{item.note}</Text>
-              ) : null}
-              <Text className="text-xs mt-2 text-muted">
-                {new Date(item.date).toLocaleDateString()}
-              </Text>
-            </View>
+          renderItem={({ item, index }) => (
+            <AnimatedExpenseItem item={item} index={index} colorScheme={colorScheme} />
           )}
-          className="mt-4"
+          style={{ marginTop: 16 }}
         />
       )}
     </View>
