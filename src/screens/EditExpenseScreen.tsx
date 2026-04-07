@@ -245,12 +245,15 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
       </TouchableOpacity>
 
       {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="inline"
-          onChange={handleDateChange}
-        />
+        <View style={{ height: 300, backgroundColor: surfaceColor, marginBottom: 20, borderRadius: 8, overflow: 'hidden' }}>
+          <DateTimePicker
+            key={date.toISOString()}
+            value={date}
+            mode="date"
+            display="spinner"
+            onChange={handleDateChange}
+          />
+        </View>
       )}
 
       {hasChanges ? (
