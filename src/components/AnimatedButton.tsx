@@ -1,5 +1,7 @@
 import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { useColorScheme } from 'react-native';
+import { COLORS } from '../constants/colors';
 
 interface AnimatedButtonProps {
   onPress: () => void;
@@ -12,6 +14,9 @@ interface AnimatedButtonProps {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function AnimatedButton({ onPress, children, className, style, disabled }: AnimatedButtonProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -33,8 +38,7 @@ export function AnimatedButton({ onPress, children, className, style, disabled }
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       disabled={disabled}
-      style={[animatedStyle, style]}
-      className={className}
+      style={[animatedStyle, styles.button, { backgroundColor: isDark ? '#6366F1' : COLORS.primary }]}
     >
       {children}
     </AnimatedPressable>
@@ -108,6 +112,13 @@ export function AnimatedCategoryChip({ selected, onPress, children, icon, color 
 }
 
 const styles = StyleSheet.create({
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
