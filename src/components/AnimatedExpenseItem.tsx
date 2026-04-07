@@ -4,6 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring, withDelay } fro
 import { Ionicons } from '@expo/vector-icons';
 import { CATEGORY_ICONS, CATEGORY_COLORS } from '../features/expense/constants/categoryIcons';
 import { formatRupiah } from '../utils/currency';
+import { COLORS } from '../constants/colors';
 import type { Expense } from '../features/expense/types';
 
 interface AnimatedExpenseItemProps {
@@ -34,10 +35,10 @@ export function AnimatedExpenseItem({ item, index }: AnimatedExpenseItemProps) {
     opacity: opacity.value,
   }));
 
-  const cardBackgroundColor = isDark ? '#1E293B' : '#FFFFFF';
-  const textPrimary = isDark ? '#F8FAFC' : '#1F2937';
-  const textSecondary = isDark ? '#E2E8F0' : '#6B7280';
-  const textMuted = isDark ? '#94A3B8' : '#9CA3AF';
+  const cardBackgroundColor = isDark ? COLORS.dark.surface : COLORS.surface;
+  const textPrimary = isDark ? COLORS.dark.text.primary : COLORS.text.primary;
+  const textSecondary = isDark ? COLORS.dark.text.secondary : COLORS.text.secondary;
+  const textMuted = isDark ? COLORS.dark.text.muted : COLORS.text.muted;
 
   return (
     <Animated.View style={[styles.container, animatedStyle, { backgroundColor: cardBackgroundColor }]}>
