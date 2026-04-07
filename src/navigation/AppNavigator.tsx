@@ -2,6 +2,7 @@ import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
 import AddExpenseScreen from '../screens/AddExpenseScreen';
+import EditExpenseScreen from '../screens/EditExpenseScreen';
 import { View, ColorSchemeName } from 'react-native';
 import { COLORS } from '../constants/colors';
 import ThemeToggleButton from './ThemeToggleButton';
@@ -9,6 +10,7 @@ import ThemeToggleButton from './ThemeToggleButton';
 export type RootStackParamList = {
   Home: undefined;
   AddExpense: undefined;
+  EditExpense: { expenseId: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,6 +48,11 @@ export default function AppNavigator({ className, colorScheme }: { className?: s
             name="AddExpense"
             component={(props: any) => <AddExpenseScreen {...props} colorScheme={colorScheme} />}
             options={{ title: 'Add Expense' }}
+          />
+          <Stack.Screen
+            name="EditExpense"
+            component={(props: any) => <EditExpenseScreen {...props} colorScheme={colorScheme} />}
+            options={{ title: 'Edit Expense' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

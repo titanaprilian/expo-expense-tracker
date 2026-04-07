@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, ColorSchemeName } from 'react-native';
+import { View, Text, StyleSheet, ColorSchemeName, Pressable } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withDelay } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { CATEGORY_ICONS, CATEGORY_COLORS } from '../features/expense/constants/categoryIcons';
@@ -11,9 +11,10 @@ interface AnimatedExpenseItemProps {
   item: Expense;
   index: number;
   colorScheme?: ColorSchemeName;
+  onPress?: () => void;
 }
 
-export function AnimatedExpenseItem({ item, index, colorScheme }: AnimatedExpenseItemProps) {
+export function AnimatedExpenseItem({ item, index, colorScheme, onPress }: AnimatedExpenseItemProps) {
   const isDark = colorScheme === 'dark';
   
   const translateY = useSharedValue(50);
@@ -41,23 +42,25 @@ export function AnimatedExpenseItem({ item, index, colorScheme }: AnimatedExpens
   const textMuted = isDark ? COLORS.dark.text.muted : COLORS.text.muted;
 
   return (
-    <Animated.View style={[styles.container, animatedStyle, { backgroundColor: cardBackgroundColor }]}>
-      <View style={styles.row}>
-        <View style={styles.leftContent}>
-          <View style={[styles.iconContainer, { backgroundColor: CATEGORY_COLORS[item.category] + '20' }]}>
-            <Ionicons name={CATEGORY_ICONS[item.category]} size={20} color={CATEGORY_COLORS[item.category]} />
+    <Pressable onPress={onPress}>
+      <Animated.View style={[styles.container, animatedStyle, { backgroundColor: cardBackgroundColor }]}>
+        <View style={styles.row}>
+          <View style={styles.leftContent}>
+            <View style={[styles.iconContainer, { backgroundColor: CATEGORY_COLORS[item.category] + '20' }]}>
+              <Ionicons name={CATEGORY_ICONS[item.category]} size={20} color={CATEGORY_COLORS[item.category]} />
+            </View>
+            <Text style={[styles.category, { color: textPrimary }]}>{item.category}</Text>
           </View>
-          <Text style={[styles.category, { color: textPrimary }]}>{item.category}</Text>
+          <Text style={[styles.amount, { color: isDark ? '#34D399' : '#10B981' }]}>{formatRupiah(item.amount)}</Text>
         </View>
-        <Text style={[styles.amount, { color: isDark ? '#34D399' : '#10B981' }]}>{formatRupiah(item.amount)}</Text>
-      </View>
-      {item.note ? (
-        <Text style={[styles.note, { color: textSecondary }]}>{item.note}</Text>
-      ) : null}
-      <Text style={[styles.date, { color: textMuted }]}>
-        {new Date(item.date).toLocaleDateString()}
-      </Text>
-    </Animated.View>
+        {item.note ? (
+          <Text style={[styles.note, { color: textSecondary }]}>{item.note}</Text>
+        ) : null}
+        <Text style={[styles.date, { color: textMuted }]}>
+          {new Date(item.date).toLocaleDateString()}
+        </Text>
+      </Animated.View>
+    </Pressable>
   );
 }
 
