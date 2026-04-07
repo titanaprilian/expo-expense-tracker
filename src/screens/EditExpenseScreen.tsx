@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Text, View, TextInput, TouchableOpacity, ColorSchemeName, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -126,7 +126,8 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
     navigation.goBack();
   };
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
+    console.log('handleDelete called, expenseId:', expenseId);
     Alert.alert(
       'Delete Expense',
       'Are you sure you want to delete this expense?',
@@ -136,16 +137,18 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
           text: 'Delete', 
           style: 'destructive',
           onPress: () => {
-            console.log('Deleting expense:', expenseId);
+            console.log('Delete pressed, calling deleteExpense with:', expenseId);
+            console.log('Current expenses before delete:', useExpenseStore.getState().expenses);
             if (expenseId) {
               deleteExpense(expenseId);
+              console.log('Expenses after delete:', useExpenseStore.getState().expenses);
               navigation.goBack();
             }
           }
         },
       ]
     );
-  };
+  }, [expenseId, deleteExpense, navigation]);
 
   const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
   const surfaceColor = isDark ? COLORS.dark.surface : COLORS.surface;

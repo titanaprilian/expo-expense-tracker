@@ -25,11 +25,18 @@ export function AnimatedButton({ onPress, children, className, style, disabled, 
   }));
 
   const handlePressIn = () => {
+    console.log('AnimatedButton handlePressIn');
     scale.value = withSpring(0.95, { damping: 15, stiffness: 300 });
   };
 
   const handlePressOut = () => {
+    console.log('AnimatedButton handlePressOut');
     scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+  };
+
+  const handlePress = () => {
+    console.log('AnimatedButton onPress called');
+    onPress();
   };
 
   const backgroundColor = isDelete 
@@ -38,7 +45,7 @@ export function AnimatedButton({ onPress, children, className, style, disabled, 
 
   return (
     <AnimatedPressable
-      onPress={onPress}
+      onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       disabled={disabled}
