@@ -1,4 +1,4 @@
-import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -15,11 +15,15 @@ type AddExpenseScreenProps = {
 function CategoryChip({ 
   category: cat, 
   selected, 
-  onSelect 
+  onSelect,
+  isDark,
+  textSecondary
 }: { 
   category: string; 
   selected: boolean; 
   onSelect: () => void;
+  isDark: boolean;
+  textSecondary: string;
 }) {
   const scale = useSharedValue(1);
   
@@ -35,27 +39,37 @@ function CategoryChip({
     scale.value = withSpring(1, { damping: 15, stiffness: 400 });
   };
 
+  const surfaceColor = isDark ? COLORS.dark.surface : COLORS.surface;
+  const borderColor = isDark ? COLORS.dark.border : COLORS.border;
+
   return (
     <Animated.View style={animatedStyle}>
       <TouchableOpacity
         onPress={onSelect}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        className="flex-row items-center gap-2 py-2 px-3 rounded-lg border"
         style={{ 
-          backgroundColor: selected ? CATEGORY_COLORS[cat] + '20' : COLORS.surface,
-          borderColor: selected ? CATEGORY_COLORS[cat] : COLORS.border,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+          paddingVertical: 8,
+          paddingHorizontal: 12,
+          borderRadius: 8,
+          borderWidth: 1,
+          backgroundColor: selected ? CATEGORY_COLORS[cat] + '20' : surfaceColor,
+          borderColor: selected ? CATEGORY_COLORS[cat] : borderColor,
         }}
       >
         <Ionicons 
           name={CATEGORY_ICONS[cat]} 
           size={20} 
-          color={selected ? CATEGORY_COLORS[cat] : COLORS.text.secondary} 
+          color={selected ? CATEGORY_COLORS[cat] : textSecondary} 
         />
         <Text 
           style={{ 
-            color: selected ? CATEGORY_COLORS[cat] : COLORS.text.secondary,
+            color: selected ? CATEGORY_COLORS[cat] : textSecondary,
             fontWeight: selected ? '600' : '400',
+            fontSize: 14,
           }}
         >
           {cat}
@@ -66,46 +80,75 @@ function CategoryChip({
 }
 
 export default function AddExpenseScreen({ navigation }: AddExpenseScreenProps) {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
   const { amount, setAmount, category, setCategory, note, setNote, handleSave } = useAddExpense(navigation);
 
+  const backgroundColor = isDark ? COLORS.dark.background : COLORS.background;
+  const surfaceColor = isDark ? COLORS.dark.surface : COLORS.surface;
+  const textPrimary = isDark ? COLORS.dark.text.primary : COLORS.text.primary;
+  const textSecondary = isDark ? COLORS.dark.text.secondary : COLORS.text.secondary;
+  const textMuted = isDark ? COLORS.dark.text.muted : COLORS.text.muted;
+  const borderColor = isDark ? COLORS.dark.border : COLORS.border;
+
   return (
-    <View className="p-4 flex-1 bg-background">
-      <Text className="text-lg font-semibold mb-2 text-primary">Amount</Text>
+    <View style={{ flex: 1, padding: 16, backgroundColor }}>
+      <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Amount</Text>
       <TextInput
-        className="border p-3 mb-5 rounded-lg bg-surface border-color text-primary"
+        style={{
+          borderWidth: 1,
+          padding: 12,
+          marginBottom: 20,
+          borderRadius: 8,
+          backgroundColor: surfaceColor,
+          borderColor: borderColor,
+          color: textPrimary,
+          fontSize: 16,
+        }}
         value={amount}
         onChangeText={setAmount}
         keyboardType="numeric"
         placeholder="Enter amount"
-        placeholderTextColor={COLORS.text.muted}
+        placeholderTextColor={textMuted}
       />
 
-      <Text className="text-lg font-semibold mb-3 text-primary">Category</Text>
-      <View className="mb-5 flex-row flex-wrap gap-2">
+      <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 12, color: textPrimary }}>Category</Text>
+      <View style={{ marginBottom: 20, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {CATEGORIES.map((cat) => (
           <CategoryChip 
             key={cat} 
             category={cat} 
             selected={category === cat}
             onSelect={() => setCategory(cat)}
+            isDark={isDark}
+            textSecondary={textSecondary}
           />
         ))}
       </View>
 
-      <Text className="text-lg font-semibold mb-2 text-primary">Note (optional)</Text>
+      <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Note (optional)</Text>
       <TextInput
-        className="border p-3 mb-5 rounded-lg bg-surface border-color text-primary"
+        style={{
+          borderWidth: 1,
+          padding: 12,
+          marginBottom: 20,
+          borderRadius: 8,
+          backgroundColor: surfaceColor,
+          borderColor: borderColor,
+          color: textPrimary,
+          fontSize: 16,
+        }}
         value={note}
         onChangeText={setNote}
         placeholder="Enter note"
-        placeholderTextColor={COLORS.text.muted}
+        placeholderTextColor={textMuted}
       />
 
       <AnimatedButton 
         onPress={handleSave}
-        className="bg-primary p-4 rounded-lg items-center"
       >
-        <Text className="text-surface font-semibold text-base">Save</Text>
+        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Save</Text>
       </AnimatedButton>
     </View>
   );

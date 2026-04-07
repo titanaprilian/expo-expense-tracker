@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, ColorSchemeName } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withDelay } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { CATEGORY_ICONS, CATEGORY_COLORS } from '../features/expense/constants/categoryIcons';
@@ -10,10 +10,10 @@ import type { Expense } from '../features/expense/types';
 interface AnimatedExpenseItemProps {
   item: Expense;
   index: number;
+  colorScheme?: ColorSchemeName;
 }
 
-export function AnimatedExpenseItem({ item, index }: AnimatedExpenseItemProps) {
-  const colorScheme = useColorScheme();
+export function AnimatedExpenseItem({ item, index, colorScheme }: AnimatedExpenseItemProps) {
   const isDark = colorScheme === 'dark';
   
   const translateY = useSharedValue(50);
