@@ -98,6 +98,12 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
   const [category, setCategory] = useState(existingExpense?.category || CATEGORIES[0]);
   const [note, setNote] = useState(existingExpense?.note || '');
 
+  const hasChanges = existingExpense && (
+    parseRupiah(amount) !== existingExpense.amount ||
+    category !== existingExpense.category ||
+    note !== (existingExpense.note || '')
+  );
+
   const handleAmountChange = (value: string) => {
     const numericValue = parseRupiah(value);
     if (numericValue > 0) {
@@ -200,25 +206,26 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
         placeholderTextColor={textMuted}
       />
 
-      <AnimatedButton 
-        onPress={handleUpdate}
-        colorScheme={colorScheme}
-      >
-        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Update</Text>
-      </AnimatedButton>
-
-      <TouchableOpacity 
-        onPress={handleDelete}
-        style={{ 
-          backgroundColor: isDark ? '#EF4444' : '#DC2626', 
-          padding: 14, 
-          borderRadius: 8, 
-          alignItems: 'center',
-          marginTop: 12 
-        }}
-      >
-        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Delete</Text>
-      </TouchableOpacity>
+      {hasChanges ? (
+        <AnimatedButton 
+          onPress={handleUpdate}
+          colorScheme={colorScheme}
+        >
+          <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Update</Text>
+        </AnimatedButton>
+      ) : (
+        <TouchableOpacity 
+          onPress={handleDelete}
+          style={{ 
+            backgroundColor: isDark ? '#EF4444' : '#DC2626', 
+            padding: 14, 
+            borderRadius: 8, 
+            alignItems: 'center' 
+          }}
+        >
+          <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>Delete</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
