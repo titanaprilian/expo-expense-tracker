@@ -171,21 +171,14 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
       </TouchableOpacity>
 
       {showDatePicker && (
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)' }}>
-          <View style={{ backgroundColor: surfaceColor, padding: 20, borderRadius: 12 }}>
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display="spinner"
-              onChange={handleDateChange}
-            />
-            <TouchableOpacity 
-              onPress={() => setShowDatePicker(false)}
-              style={{ padding: 10, alignItems: 'center' }}
-            >
-              <Text style={{ color: textPrimary, fontSize: 16 }}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={{ marginBottom: 20 }}>
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="spinner"
+            onChange={handleDateChange}
+            themeVariant={isDark ? 'dark' : 'light'}
+          />
         </View>
       )}
 
