@@ -171,14 +171,12 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
       </TouchableOpacity>
 
       {showDatePicker && (
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}>
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-          />
-        </View>
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="inline"
+          onChange={handleDateChange}
+        />
       )}
 
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8, color: textPrimary }}>Note (optional)</Text>
