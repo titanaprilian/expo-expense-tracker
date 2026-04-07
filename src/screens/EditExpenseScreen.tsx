@@ -254,7 +254,7 @@ export default function EditExpenseScreen({ navigation, colorScheme, route }: Ed
               <DateTimePicker
                 value={date}
                 mode="date"
-                display="spinner"
+                display="default"
                 onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
                   if (selectedDate) {
                     setDate(selectedDate);

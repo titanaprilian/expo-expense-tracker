@@ -180,7 +180,7 @@ export default function AddExpenseScreen({ navigation, colorScheme }: AddExpense
               <DateTimePicker
                 value={date}
                 mode="date"
-                display="spinner"
+                display="default"
                 onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
                   if (selectedDate) {
                     setDate(selectedDate);

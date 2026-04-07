@@ -1,18 +1,20 @@
-# Issue: Manual Date Selection and Date-based Grouping
+# Issue: Fix Invisible Date Picker
 
 ## Overview
-Currently, expenses are automatically assigned the creation date, making it impossible to log past or future transactions. Additionally, the main expense list is a flat list that becomes difficult to read as it grows.
+The current implementation of the date picker shows the modal container and the header (Cancel/Done buttons), but the actual calendar or spinner is invisible to the user.
+
+## The Problem
+Using `display="spinner"` inside a `Modal` often leads to layout issues where the picker has zero height or is rendered outside the visible area, especially when specific `style` properties are missing or conflicting with the modal's container.
 
 ## Goals
-- **Manual Date Entry**: Add a date picker or input field to both the "Add Expense" and "Edit Expense" screens.
-- **Data Model**: Ensure the user-selected date is saved in the expense record.
-- **Organized View**: Group the expenses on the Home screen by their date (e.g., "Today", "Yesterday", or "April 7, 2026").
-- **Sorting**: Ensure expenses within each group are sorted chronologically (or reverse-chronologically).
+- **Fix Visibility**: Ensure the date picker is fully visible when the modal opens.
+- **Platform Defaults**: Change the picker to use the system default display mode (`default`) for better reliability.
+- **Layout**: Ensure the picker occupies the correct space within the modal.
 
 ## Technical Guidance
-- **Picker**: Use a standard React Native / Expo date picker library.
-- **UI Logic**: Consider switching the `FlatList` on the Home screen to a `SectionList` to handle the grouped data structure more effectively.
-- **Formatting**: Use a consistent date format for the group headers.
+- **Display Mode**: Change `display="spinner"` to `display="default"` (or remove the prop to use the default).
+- **Styling**: On iOS, if you must use `spinner`, ensure the `DateTimePicker` has an explicit `width` and `height` that fits within the parent `View`.
+- **Simplification**: Consider if a `Modal` is strictly necessary on Android, as the library already provides a native modal dialog for that platform.
 
 ## Note for Developer
-The goal is to give users more control over their financial history. The grouping should make the dashboard feel organized and easy to scan. Think about how to handle empty states or very long lists within a single date group.
+Test this on both iOS and Android if possible. The `default` display mode is generally the most robust and matches user expectations for each platform.

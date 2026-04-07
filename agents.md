@@ -33,9 +33,8 @@ const onChange = (event, selectedDate) => {
 };
 ```
 
-### 5. Check for Library Issues
-- Ensure `@react-native-community/datetimepicker` is correctly installed in `package.json`.
-- If you just installed it, you may need to restart the Expo development server (`npx expo start -c`).
-
-## Note for Agent
-Follow these steps in order. Start by logging the state change to the console to confirm the `onPress` is actually triggering the state update.
+### 6. Special Case: Invisible Picker inside a Modal
+If the Modal shows up (you see the "Done" button) but the picker is missing:
+- **Change Display Mode**: Remove `display="spinner"` and use `display="default"`. Spinner mode often requires very specific parent container heights to be visible.
+- **Background Color**: On some versions of Android/iOS, if the theme is dark but the picker doesn't detect it, it might render white text on a white background. Try setting an explicit `textColor` prop if available, or check if the parent `View` background is conflicting.
+- **Direct Rendering**: On Android, try rendering the `<DateTimePicker>` *outside* of the `<Modal>` component. The library's `default` mode on Android creates its own native modal, and nesting it inside a React Native `<Modal>` can cause z-index or visibility issues.
